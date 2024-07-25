@@ -1,6 +1,7 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import * as process from 'node:process';
+import { $ } from "bun";
 
 
 const TOKEN = process.env.GITHUB_TOKEN;
@@ -9,9 +10,9 @@ const BASE_BRANCH = process.env.BASE_BRANCH; //to branch
 
 const octokit = github.getOctokit(TOKEN);
 
-
+/* --------------------- Get last merged pull request info --------------------- */
 core.info(`Fetching pull requests merged into develop from ${BASE_BRANCH}...`);
-const { data: closedPullRequestsByHeadBranch } = await octokit.rest.pulls.list({
+const {data: closedPullRequestsByHeadBranch} = await octokit.rest.pulls.list({
   owner: github.context.repo.owner,
   repo: github.context.repo.repo,
   state: 'closed',
@@ -45,7 +46,12 @@ core.info(`Merged at: ${new Date(lastMergedPullRequest.merged_at).toLocaleDateSt
 core.info(`Merge commit SHA: ${lastPullRequestMergeCommit}`);
 core.endGroup()
 
-if(!lastPullRequestMergeCommit) {
+if (!lastPullRequestMergeCommit) {
   core.setFailed(`Merge commit SHA is not found for the last merged pull request`);
+  process.exit(1);
 }
+
+await $`git log`
+
+
 
