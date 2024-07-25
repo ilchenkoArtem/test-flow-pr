@@ -14,5 +14,3 @@ jobs:
       - run: bun ./test.ts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          test: true
