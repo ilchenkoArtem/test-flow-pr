@@ -12,7 +12,6 @@ const { data: closedPrByToBranch } = await octokit.rest.pulls.list({
   owner: github.context.repo.owner,
   repo: github.context.repo.repo,
   state: 'closed',
-  base: TO_BRANCH,
   sort: 'updated',
   direction: 'desc',
 });
