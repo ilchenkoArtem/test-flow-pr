@@ -1,1 +1,6 @@
-console.log("ts", process.env.GITHUB_TOKEN);
+import * as core from '@actions/core';
+
+
+const githubToken = core.getInput('GITHUB_TOKEN', { required: true });
+
+console.log('githubToken', githubToken + "t");
