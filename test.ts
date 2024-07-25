@@ -45,7 +45,7 @@ core.info(`  Merge commit SHA: ${lastPullRequestMergeCommit}`);
 core.endGroup()
 
 if(true) {
-  core.error(`Merge commit SHA is not found for the last merged pull request`);
+  core.setFailed(`Merge commit SHA is not found for the last merged pull request`);
   process.exit(1)
 }
 
