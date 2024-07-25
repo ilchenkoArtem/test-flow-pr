@@ -1,5 +1,6 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
+import * as process from 'node:process';
 
 const TOKEN = process.env.GITHUB_TOKEN;
 const HEAD_BRANCH = process.env.HEAD_BRANCH; //from branch
@@ -21,6 +22,7 @@ const { data: closedPullRequestsByHeadBranch } = await octokit.rest.pulls.list({
 
 if (closedPullRequestsByHeadBranch.length === 0) {
   core.notice(`No pull requests found for ${HEAD_BRANCH}. Skipping...`);
+  process.exit()
 }
 
 const mergedPullRequestsByHeadBranch = closedPullRequestsByHeadBranch.filter(
@@ -29,8 +31,8 @@ const mergedPullRequestsByHeadBranch = closedPullRequestsByHeadBranch.filter(
 
 if (mergedPullRequestsByHeadBranch.length === 0) {
   core.notice(`No merged pull requests found for ${HEAD_BRANCH}. Skipping...`);
+  process.exit()
 }
-
 
 const lastMergedPullRequest = mergedPullRequestsByHeadBranch[0];
 const lastPullRequestMergeCommit = lastMergedPullRequest.merge_commit_sha;
@@ -42,7 +44,7 @@ core.info(`  Merged at: ${new Date(lastMergedPullRequest.merged_at).toLocaleDate
 core.info(`  Merge commit SHA: ${lastPullRequestMergeCommit}`);
 core.endGroup()
 
-if(!lastPullRequestMergeCommit) {
-  core.error(`Merge commit SHA is not found for the last merged pull request. Exiting...`);
+if(true) {
+  core.error(`Merge commit SHA is not found for the last merged pull request`);
 }
 
