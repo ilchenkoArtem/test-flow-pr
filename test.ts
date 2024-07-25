@@ -20,8 +20,6 @@ const { data: closedPullRequestsByHeadBranch } = await octokit.rest.pulls.list({
 
 if (closedPullRequestsByHeadBranch.length === 0) {
   core.notice(`No pull requests found for ${HEAD_BRANCH}. Skipping...`);
-} else {
-  core.info(`Found ${closedPullRequestsByHeadBranch.length} pull requests for ${HEAD_BRANCH}`);
 }
 
 const mergedPullRequestsByHeadBranch = closedPullRequestsByHeadBranch.filter(
