@@ -33,8 +33,6 @@ if (mergedPullRequestsByHeadBranch.length === 0) {
 
 const lastMergedPullRequest = mergedPullRequestsByHeadBranch[0];
 
-console.log('lastMergedPullRequest', lastMergedPullRequest);
-
 core.info(`Last merged pull request:`);
 core.debug(`  ID: ${lastMergedPullRequest}`);
 core.info(`  URL: ${lastMergedPullRequest.html_url}`);
