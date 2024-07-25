@@ -31,11 +31,18 @@ if (mergedPullRequestsByHeadBranch.length === 0) {
   core.notice(`No merged pull requests found for ${HEAD_BRANCH}. Skipping...`);
 }
 
-const lastMergedPullRequest = mergedPullRequestsByHeadBranch[0];
 
-core.startGroup(`Last merged pull request:`);
+const lastMergedPullRequest = mergedPullRequestsByHeadBranch[0];
+const lastPullRequestMergeCommit = lastMergedPullRequest.merge_commit_sha;
+
+core.startGroup(`Last merged pull request info:`);
 core.info(`  URL: ${lastMergedPullRequest.html_url}`);
 core.info(`  Title: ${lastMergedPullRequest.title}`);
 core.info(`  Merged at: ${new Date(lastMergedPullRequest.merged_at).toLocaleDateString()}`);
+core.info(`  Merge commit SHA: ${lastPullRequestMergeCommit}`);
 core.endGroup()
+
+if(!lastPullRequestMergeCommit) {
+  core.error(`Merge commit SHA is not found for the last merged pull request. Exiting...`);
+}
 
