@@ -9,8 +9,8 @@ jobs:
   update-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-      - run: bun ./test.ts
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        - uses: actions/checkout@v4
+        - uses: oven-sh/setup-bun@v2
+        - run: bun ./test.ts
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
