@@ -18,6 +18,8 @@ const { data: closedPullRequestsByHeadBranch } = await octokit.rest.pulls.list({
   direction: 'desc',
 });
 
+console.log('closedPullRequestsByHeadBranch', closedPullRequestsByHeadBranch);
+
 if (closedPullRequestsByHeadBranch.length === 0) {
   core.info(`No pull requests found for ${HEAD_BRANCH}. Skipping...`);
 }
