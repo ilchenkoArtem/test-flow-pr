@@ -1,6 +1,8 @@
 import * as core from '@actions/core';
+import * as github from '@actions/github';
+
+const token = process.env.GITHUB_TOKEN;
+const octokit = github.getOctokit(token);
 
 
 
-const githubToken = process.env.GITHUB_TOKEN;
-console.log('githubToken', githubToken + "1");
