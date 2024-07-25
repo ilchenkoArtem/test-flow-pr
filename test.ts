@@ -34,7 +34,6 @@ if (mergedPullRequestsByHeadBranch.length === 0) {
 const lastMergedPullRequest = mergedPullRequestsByHeadBranch[0];
 
 core.info(`Last merged pull request:`);
-core.debug(`  MR: ${JSON.stringify(lastMergedPullRequest)}`);
 core.info(`  URL: ${lastMergedPullRequest.html_url}`);
 core.info(`  Title: ${lastMergedPullRequest.title}`);
 core.info(`  Merged at: ${new Date(lastMergedPullRequest.merged_at).toLocaleDateString()}`);
