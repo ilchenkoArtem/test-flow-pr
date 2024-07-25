@@ -14,3 +14,5 @@ jobs:
         - run: bun ./test.ts
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
+            HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
