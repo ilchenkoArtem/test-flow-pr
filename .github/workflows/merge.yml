@@ -6,12 +6,11 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
 
 jobs:
-  merge:
+  update-tests:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
-        run: bun ./test.ts
+      - run: bun ./test.ts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
