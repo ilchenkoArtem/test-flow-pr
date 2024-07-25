@@ -8,7 +8,6 @@ const BASE_BRANCH = process.env.BASE_BRANCH; //to branch
 const octokit = github.getOctokit(TOKEN);
 
 
-console.log(`Fetching pull requests merged into develop from ${BASE_BRANCH}...`);
 const { data: closedPullRequestsByHeadBranch } = await octokit.rest.pulls.list({
   owner: github.context.repo.owner,
   repo: github.context.repo.repo,
