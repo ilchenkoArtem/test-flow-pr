@@ -7,8 +7,8 @@ const BASE_BRANCH = process.env.BASE_BRANCH; //to branch
 
 const octokit = github.getOctokit(TOKEN);
 
-console.log('test')
 
+core.info(`Fetching pull requests merged into develop from ${BASE_BRANCH}...`);
 const { data: closedPullRequestsByHeadBranch } = await octokit.rest.pulls.list({
   owner: github.context.repo.owner,
   repo: github.context.repo.repo,
@@ -18,10 +18,10 @@ const { data: closedPullRequestsByHeadBranch } = await octokit.rest.pulls.list({
   direction: 'desc',
 });
 
-console.log('closedPullRequestsByHeadBranch', closedPullRequestsByHeadBranch);
-
 if (closedPullRequestsByHeadBranch.length === 0) {
   core.info(`No pull requests found for ${HEAD_BRANCH}. Skipping...`);
+} else {
+  core.info(`Found ${closedPullRequestsByHeadBranch.length} pull requests for ${HEAD_BRANCH}`);
 }
 
 const mergedPullRequestsByHeadBranch = closedPullRequestsByHeadBranch.filter(
@@ -29,7 +29,7 @@ const mergedPullRequestsByHeadBranch = closedPullRequestsByHeadBranch.filter(
 );
 
 if (mergedPullRequestsByHeadBranch.length === 0) {
-  core.info(`No merged pull requests found for ${HEAD_BRANCH}. Skipping...`);
+  core.notice(`No merged pull requests found for ${HEAD_BRANCH}. Skipping...`);
 }
 
 const lastMergedPullRequest = mergedPullRequestsByHeadBranch[0];
