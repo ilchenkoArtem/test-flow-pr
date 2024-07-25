@@ -13,6 +13,6 @@ jobs:
       - name: Checkout repository
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
-      - run: bun ./test.ts
+        run: bun ./test.ts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
