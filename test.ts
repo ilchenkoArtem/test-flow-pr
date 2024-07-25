@@ -46,6 +46,7 @@ core.endGroup()
 
 if(true) {
   core.setFailed(`Merge commit SHA is not found for the last merged pull request`);
-  process.exit(1)
 }
+
+console.log('test1')
 
