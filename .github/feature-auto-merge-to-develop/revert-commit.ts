@@ -45,12 +45,12 @@ const revert = async (commit: string) => {
 
   if (resultMessage.includes("Your branch is up to date")) {
     core.notice(`Commit "${commit}" has already been reverted`)
-    return;
+    return true;
   }
 
   console.log('errorMessage', errorMessage);
   console.log('resultMessage', resultMessage);
-  return;
+  return false
 }
 
 
