@@ -16,9 +16,12 @@ export const revertCommit = async ({branchForRevert, commitToRevert, returnToBra
   core.info(`Reverting commit "${commitToRevert}" on branch "${branchForRevert}"...`)
 
   try {
+    await $`git config --global user.email "nazar.yavnyy@futurelog.com"`
+    await $`git config --global user.name "Nazar Yavnyy"`
+
     await $`git checkout ${branchForRevert}`
-    await $`git cat-file -t ${commitToRevert}`
-    await $`git revert ${commitToRevert} --no-edit`
+    await $`git cat-file -t ${commitToRevert}` // Check if commit exists
+    await $`git revert ${commitToRevert} --no-edit` // Revert commit without opening the editor
     await $`git push`
 
 
