@@ -13,7 +13,7 @@ jobs:
           with:
             fetch-depth: 0
         - uses: oven-sh/setup-bun@v2
-        - run: bun ./test.ts
+        - run: bun ./.github/feature-auto-merge-to-develop/run.ts
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
