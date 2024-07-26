@@ -1,7 +1,5 @@
 import { $ } from 'bun';
-import * as process from 'node:process';
 import * as core from '@actions/core';
-import { processError } from './utils';
 
 interface RevertCommitArgs {
   commitToRevert: string;
@@ -45,7 +43,7 @@ export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken
     await $`git push origin ${branchForRevert}`
     core.notice(`Commit "${commitToRevert}" has been reverted on branch "${branchForRevert}"`)
   } catch (error) {
-    core.setFailed(error.message)
+    core.setFailed(error)
   } finally {
     core.endGroup();
   }
