@@ -50,14 +50,17 @@ core.endGroup()
 
 if (!lastPullRequestMergeCommit) {
   core.setFailed(`Merge commit SHA is not found for the last merged pull request`);
+  process.exit(1);
 }
 
+core.startGroup(`Reverting commit "${lastPullRequestMergeCommit}"...`);
 await revertCommit({
   branchForRevert: lastPullRequestMergeBaseBranch,
   commitToRevert: lastPullRequestMergeCommit,
   gitHubToken: TOKEN,
   repoFullName: `${github.context.repo.owner}/${github.context.repo.repo}`,
 })
+core.endGroup()
 
 
 

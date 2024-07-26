@@ -9,9 +9,6 @@ interface RevertCommitArgs {
 }
 
 export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken, repoFullName}: RevertCommitArgs) => {
-  core.startGroup(`Reverting commit "${commitToRevert}" on branch "${branchForRevert}"...`)
-
-
   await $`git remote set-url origin https://x-access-token:${gitHubToken}@github.com/${repoFullName}.git`
   await $`git config --global user.email "github-actions[bot]@users.noreply.github.com"`
   await $`git config --global user.name "github-actions[bot]"`
@@ -29,20 +26,22 @@ export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken
 
   if (revertErrorMessage.includes("After resolving the conflicts, mark them with")) {
     core.setFailed(`Failed to revert commit "${commitToRevert}". Please resolve the conflicts manually and run the action again`);
+    process.exit(1);
   }
 
   if (revertErrorMessage.includes("fatal: bad object")) {
     core.setFailed(`Failed to revert commit "${commitToRevert}". Commit not found`);
+    process.exit(1);
   }
 
   if (revertErrorMessage) {
     core.setFailed(`Failed to revert commit "${commitToRevert}". Error: ${revertErrorMessage}`)
+    process.exit(1);
   }
 
   await $`git push origin ${branchForRevert}`
 
   core.notice(`Commit "${commitToRevert}" has been reverted on branch "${branchForRevert}"`)
-  core.endGroup();
 }
 
 
