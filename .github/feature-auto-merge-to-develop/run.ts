@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import * as process from 'node:process';
-import {revertCommit, revertCommit2} from './revert-commit';
+import {revertCommit} from './revert-commit';
 
 
 const TOKEN = process.env.GITHUB_TOKEN;
@@ -38,12 +38,14 @@ if (mergedPullRequestsByHeadBranch.length === 0) {
 
 const lastMergedPullRequest = mergedPullRequestsByHeadBranch[0];
 const lastPullRequestMergeCommit = lastMergedPullRequest.merge_commit_sha;
+const lastPullRequestMergeBaseBranch = lastMergedPullRequest.base.ref;
 
 core.startGroup(`Last merged pull request info:`);
 core.info(`URL: ${lastMergedPullRequest.html_url}`);
 core.info(`Title: ${lastMergedPullRequest.title}`);
 core.info(`Merged at: ${new Date(lastMergedPullRequest.merged_at).toLocaleDateString()}`);
 core.info(`Merge commit SHA: ${lastPullRequestMergeCommit}`);
+core.info(`Merged to branch: ${lastPullRequestMergeBaseBranch}`);
 core.endGroup()
 
 if (!lastPullRequestMergeCommit) {
@@ -51,7 +53,12 @@ if (!lastPullRequestMergeCommit) {
   process.exit(1);
 }
 
-await revertCommit2({branchForRevert: 'develop', commitToRevert: lastPullRequestMergeCommit});
+/*await revertCommit({
+  branchForRevert: HEAD_BRANCH,
+  commitToRevert: lastPullRequestMergeCommit,
+  gitHubToken: TOKEN,
+  repoFullName: `${github.context.repo.owner}/${github.context.repo.repo}`,
+})*/
 
 
 
