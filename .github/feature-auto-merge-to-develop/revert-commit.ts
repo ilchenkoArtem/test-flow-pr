@@ -35,6 +35,7 @@ export const revertCommit = async ({branchForRevert, commitToRevert, returnToBra
 
     core.info(`Commit "${commitToRevert}" has been reverted on branch "${branchForRevert}"`)
   } catch (error) {
+    console.log('error', error);
     core.setFailed(error.message)
     process.exit(1)
   } finally {
