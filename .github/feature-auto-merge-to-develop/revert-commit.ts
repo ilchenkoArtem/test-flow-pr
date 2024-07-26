@@ -35,9 +35,6 @@ export const revertCommit = async ({branchForRevert, commitToRevert, returnToBra
 
     core.info(`Commit "${commitToRevert}" has been reverted on branch "${branchForRevert}"`)
   } catch (error) {
-    console.log(`Failed with code ${error.exitCode}`);
-    console.log("stdout", error.stdout.toString());
-    console.log("stderr", error.stderr.toString());
     core.setFailed(error.message)
     process.exit(1)
   } finally {
@@ -47,7 +44,7 @@ export const revertCommit = async ({branchForRevert, commitToRevert, returnToBra
 
 
 const revert = async (commit: string) => {
-  const {stderr, stdout} = await $`git revert ${commit} --no-edit`.quiet();
+  const {stderr, stdout} = await $`git revert ${commit} --no-edit`.quiet().nothrow();
   const errorMessage = stderr.toString();
   const resultMessage = stdout.toString();
 
