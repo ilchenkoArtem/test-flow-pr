@@ -1,5 +1,7 @@
-import * as github from '@actions/github';
-import process from 'node:process';
+import * as core from '@actions/core';
 
-export const getOctokit = (token: string) => github.getOctokit(process.env.GITHUB_TOKEN);
+export const processError = (message: string) => {
+  core.setFailed(message);
+  process.exit(1);
+}
 
