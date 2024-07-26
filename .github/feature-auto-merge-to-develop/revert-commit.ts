@@ -62,10 +62,6 @@ export const revertCommit2 = async ({branchForRevert, commitToRevert}: RevertCom
     message: `Revert "${lastCommit.commit.message}"`,
     tree: lastCommit.commit.tree.sha,
     parents: [lastCommit.sha],
-    author: {
-      name: 'github-actions[bot]',
-      email: 'github-actions[bot]@users.noreply.github.com'
-    }
   });
 
   core.info(`Commit "${commitToRevert}" has been reverted on branch "${branchForRevert}"`);
