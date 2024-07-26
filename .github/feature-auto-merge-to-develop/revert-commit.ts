@@ -47,12 +47,13 @@ export const revertCommit = async ({branchForRevert, commitToRevert, returnToBra
 
 
 const revert = async (commit: string) => {
-  const revert = await $`git revert ${commit} --no-edit`.quiet();
+  const {stderr, stdout} = await $`git revert ${commit} --no-edit`.quiet();
+  const errorMessage = stderr.toString();
+  const resultMessage = stdout.toString();
 
-  if (revert.stdout.toString().include("Your branch is up to date")) {
-    core.info(`Commit "${commit}" already reverted`);
-    return;
-  }
+  console.log('errorMessage', errorMessage);
+  console.log('resultMessage', resultMessage);
+
 
   return;
 }
