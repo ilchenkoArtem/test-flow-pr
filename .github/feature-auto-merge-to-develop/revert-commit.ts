@@ -42,8 +42,6 @@ export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken
 
     await $`git push origin ${branchForRevert}`
     core.notice(`Commit "${commitToRevert}" has been reverted on branch "${branchForRevert}"`)
-  } catch (error) {
-    core.setFailed(error)
   } finally {
     core.endGroup();
   }
