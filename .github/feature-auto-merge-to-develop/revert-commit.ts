@@ -24,8 +24,7 @@ export const revertCommit = async ({branchForRevert, commitToRevert, returnToBra
     await $`git config --global user.name "ilchenkoArtem"`
 
     await $`git checkout ${branchForRevert}`
-    const result = await $`git cat-file -t ${commitToRevert}`
-    console.log('result', result);
+    await $`git cat-file -t ${commitToRevert}`.toString()
     await $`git revert ${commitToRevert} --no-edit` // Revert commit without opening the editor
     await $`git push origin ${branchForRevert}`
 
@@ -37,8 +36,8 @@ export const revertCommit = async ({branchForRevert, commitToRevert, returnToBra
     core.info(`Commit "${commitToRevert}" has been reverted on branch "${branchForRevert}"`)
   } catch (error) {
     console.log(`Failed with code ${error.exitCode}`);
-    console.log(error.stdout.toString());
-    console.log(error.stderr.toString());
+    console.log("stdout", error.stdout.toString());
+    console.log("stderr", error.stderr.toString());
     core.setFailed(error.message)
     process.exit(1)
   } finally {
