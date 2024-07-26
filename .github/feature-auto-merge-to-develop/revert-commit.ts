@@ -24,10 +24,8 @@ export const revertCommit = async ({branchForRevert, commitToRevert, returnToBra
     await $`git config --global user.name "ilchenkoArtem"`
 
     await $`git checkout ${branchForRevert}`
-    const response = await $`git cat-file -t ${commitToRevert}`;
-    console.log("stdout", response.stdout.toString());
-    const revert = await $`git revert ${commitToRevert} --no-edit`;
-    console.log('revert', revert);
+    await $`git cat-file -t ${commitToRevert}`;
+    await revert(commitToRevert);
     //await $`git push origin ${branchForRevert}`
 
     if (returnToBranch) {
@@ -45,6 +43,18 @@ export const revertCommit = async ({branchForRevert, commitToRevert, returnToBra
   } finally {
     core.endGroup();
   }
+}
+
+
+const revert = async (commit: string) => {
+  const revert = await $`git revert ${commit} --no-edit`;
+
+  if (revert.include("Your branch is up to date")) {
+    core.info(`Commit "${commit}" already reverted`);
+    return;
+  }
+
+  return;
 }
 
 
