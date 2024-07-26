@@ -50,7 +50,6 @@ core.endGroup()
 
 if (!lastPullRequestMergeCommit) {
   core.setFailed(`Merge commit SHA is not found for the last merged pull request`);
-  process.exit(1);
 }
 
 await revertCommit({
