@@ -26,28 +26,26 @@ export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken
     const revertResultMessage = stdout.toString();
 
     if (revertResultMessage.includes("Your branch is up to date")) {
-      processError(`Commit "${commitToRevert}" has already been reverted`)
+      core.info(`Commit "${commitToRevert}" has already been reverted`)
       return;
     }
 
     if (revertErrorMessage.includes("After resolving the conflicts, mark them with")) {
       core.setFailed(`Failed to revert commit "${commitToRevert}". Please resolve the conflicts manually and run the action again`);
-      process.exit(1);
     }
 
     if (revertErrorMessage.includes("fatal: bad object")) {
-      processError(`Failed to revert commit "${commitToRevert}". Commit not found`);
+      core.setFailed(`Failed to revert commit "${commitToRevert}". Commit not found`);
     }
 
     if (revertErrorMessage) {
-      processError(`Failed to revert commit "${commitToRevert}". Error: ${revertErrorMessage}`)
+      core.setFailed(`Failed to revert commit "${commitToRevert}". Error: ${revertErrorMessage}`)
     }
 
     await $`git push origin ${branchForRevert}`
     core.info(`Commit "${commitToRevert}" has been reverted on branch "${branchForRevert}"`)
   } catch (error) {
     core.setFailed(error.message)
-    process.exit(1)
   } finally {
     core.endGroup();
   }
