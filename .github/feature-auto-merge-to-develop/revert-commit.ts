@@ -19,8 +19,8 @@ export const revertCommit = async ({branchForRevert, commitToRevert, returnToBra
 
   try {
     await $`git remote set-url origin https://x-access-token:${gitHubToken}@github.com/${repoFullName}.git`
-    await $`git config --global user.email "github-actions[bot]@users.noreply.github.com"`
-    await $`git config --global user.name "github-actions[bot]"`
+    await $`git config --global user.email "artem.ilchenko@711media.de"`
+    await $`git config --global user.name "github-ilchenkoArtem"`
 
     await $`git checkout ${branchForRevert}`
     await $`git cat-file -t ${commitToRevert}` // Check if commit exists
