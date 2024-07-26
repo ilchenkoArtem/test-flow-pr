@@ -26,7 +26,7 @@ export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken
     const revertResultMessage = stdout.toString();
 
     if (revertResultMessage.includes("Your branch is up to date")) {
-      core.info(`Commit "${commitToRevert}" has already been reverted`)
+      core.notice(`Commit "${commitToRevert}" has already been reverted`)
       return;
     }
 
