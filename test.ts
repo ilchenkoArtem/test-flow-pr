@@ -51,7 +51,7 @@ if (!lastPullRequestMergeCommit) {
   process.exit(1);
 }
 
-await $`git log`
+await $`git checkout develop`;
 
 
 
