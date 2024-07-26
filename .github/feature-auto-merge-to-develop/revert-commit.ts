@@ -26,12 +26,7 @@ export const revertCommit = async ({branchForRevert, commitToRevert, returnToBra
     await $`git checkout ${branchForRevert}`
     //await $`git cat-file -t ${commitToRevert}`;
     await revert(commitToRevert);
-    //await $`git push origin ${branchForRevert}`
-
-    if (returnToBranch) {
-      await $`git checkout ${returnToBranch}`
-    }
-
+    await $`git push origin ${branchForRevert}`
 
     core.info(`Commit "${commitToRevert}" has been reverted on branch "${branchForRevert}"`)
   } catch (error) {
@@ -55,8 +50,6 @@ const revert = async (commit: string) => {
 
   console.log('errorMessage', errorMessage);
   console.log('resultMessage', resultMessage);
-
-
   return;
 }
 
