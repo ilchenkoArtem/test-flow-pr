@@ -15,15 +15,16 @@ interface RevertCommitArgs {
 }
 
 export const revertCommit = async ({branchForRevert, commitToRevert, returnToBranch, gitHubToken, repoFullName}:RevertCommitArgs) => {
-  core.info(`Reverting commit "${commitToRevert}" on branch "${branchForRevert}"...`)
+  core.startGroup(`Reverting commit "${commitToRevert}" on branch "${branchForRevert}"...`)
+
 
   try {
     await $`git remote set-url origin https://x-access-token:${gitHubToken}@github.com/${repoFullName}.git`
     await $`git config --global user.email "artem.ilchenko@711media.de"`
-    await $`git config --global user.name "github-ilchenkoArtem"`
+    await $`git config --global user.name "ilchenkoArtem"`
 
     await $`git checkout ${branchForRevert}`
-    await $`git cat-file -t ${commitToRevert}` // Check if commit exists
+    await $`git cat-file -t ${commitToRevert}`
     await $`git revert ${commitToRevert} --no-edit` // Revert commit without opening the editor
     await $`git push origin ${branchForRevert}`
 
@@ -36,6 +37,8 @@ export const revertCommit = async ({branchForRevert, commitToRevert, returnToBra
   } catch (error) {
     core.setFailed(error.message)
     process.exit(1)
+  } finally {
+    core.endGroup();
   }
 }
 
