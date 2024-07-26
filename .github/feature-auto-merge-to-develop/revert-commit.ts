@@ -26,7 +26,8 @@ export const revertCommit = async ({branchForRevert, commitToRevert, returnToBra
     await $`git checkout ${branchForRevert}`
     const response = await $`git cat-file -t ${commitToRevert}`;
     console.log("stdout", response.stdout.toString());
-    //await $`git revert ${commitToRevert} --no-edit` // Revert commit without opening the editor
+    const revert = await $`git revert ${commitToRevert} --no-edit`.toString();
+    console.log('revert', revert);
     //await $`git push origin ${branchForRevert}`
 
     if (returnToBranch) {
