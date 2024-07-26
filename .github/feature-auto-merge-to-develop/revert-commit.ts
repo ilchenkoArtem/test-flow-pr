@@ -45,12 +45,17 @@ const revert = async (commit: string) => {
 
   if (resultMessage.includes("Your branch is up to date")) {
     core.notice(`Commit "${commit}" has already been reverted`)
-    return true;
   }
 
-  console.log('errorMessage', errorMessage);
-  console.log('resultMessage', resultMessage);
-  return false
+  if (errorMessage.includes("After resolving the conflicts, mark them with")) {
+    core.setFailed(`Failed to revert commit "${commit}". Please resolve the conflicts manually and run the action again`);
+    process.exit(1);
+  }
+
+  if (errorMessage) {
+    core.setFailed(`Failed to revert commit "${commit}". Error: ${errorMessage}`)
+    process.exit(1);
+  }
 }
 
 
