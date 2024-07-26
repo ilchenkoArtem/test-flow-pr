@@ -53,12 +53,12 @@ if (!lastPullRequestMergeCommit) {
   process.exit(1);
 }
 
-/*await revertCommit({
-  branchForRevert: HEAD_BRANCH,
+await revertCommit({
+  branchForRevert: lastPullRequestMergeBaseBranch,
   commitToRevert: lastPullRequestMergeCommit,
   gitHubToken: TOKEN,
   repoFullName: `${github.context.repo.owner}/${github.context.repo.repo}`,
-})*/
+})
 
 
 
