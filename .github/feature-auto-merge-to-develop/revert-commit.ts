@@ -1,6 +1,7 @@
 import { $ } from 'bun';
 import * as process from 'node:process';
 import * as core from '@actions/core';
+import * as github from '@actions/github';
 
 interface RevertCommitArgs {
   commitToRevert: string;
@@ -34,4 +35,38 @@ export const revertCommit = async ({branchForRevert, commitToRevert, returnToBra
       await $`git checkout ${returnToBranch}`
     }
   }
+}
+
+export const revertCommit2 = async ({branchForRevert, commitToRevert}: RevertCommitArgs) => {
+  const TOKEN = process.env.GITHUB_TOKEN;
+  const octokit = github.getOctokit(TOKEN);
+
+  core.info(`Reverting commit "${commitToRevert}" on branch "${branchForRevert}"...`);
+  const { data: lastCommit } = await octokit.rest.repos.getCommit({
+    owner: github.context.repo.owner,
+    repo: github.context.repo.repo,
+    ref: branchForRevert
+  });
+
+  await octokit.rest.git.updateRef({
+    owner: github.context.repo.owner,
+    repo: github.context.repo.repo,
+    ref: `heads/${branchForRevert}`,
+    sha: lastCommit.sha,
+    force: true
+  });
+
+  await octokit.rest.git.createCommit({
+    owner: github.context.repo.owner,
+    repo: github.context.repo.repo,
+    message: `Revert "${lastCommit.commit.message}"`,
+    tree: lastCommit.commit.tree.sha,
+    parents: [lastCommit.sha],
+    author: {
+      name: 'github-actions[bot]',
+      email: 'github-actions[bot]@users.noreply.github.com'
+    }
+  });
+
+  core.info(`Commit "${commitToRevert}" has been reverted on branch "${branchForRevert}"`);
 }

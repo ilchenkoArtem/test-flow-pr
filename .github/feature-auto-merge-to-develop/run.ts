@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import * as process from 'node:process';
-import {revertCommit} from './revert-commit';
+import {revertCommit, revertCommit2} from './revert-commit';
 
 
 const TOKEN = process.env.GITHUB_TOKEN;
@@ -51,7 +51,7 @@ if (!lastPullRequestMergeCommit) {
   process.exit(1);
 }
 
-await revertCommit({branchForRevert: 'develop', commitToRevert: lastPullRequestMergeCommit});
+await revertCommit2({branchForRevert: 'develop', commitToRevert: lastPullRequestMergeCommit});
 
 
 
