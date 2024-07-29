@@ -34,17 +34,17 @@ export const squashMergeCommit = async ({targetBranch, sourceBranch, commitMessa
     await $`git commit -m "${commitMessage}"`;
     core.info(`Pushing changes to ${targetBranch}...`);
     await $`git push origin ${targetBranch}`;
-    core.notice(`Commit has been squashed merged from "${sourceBranch} to ${targetBranch}"`);
+    core.notice(`Commit has been squashed merged from "${sourceBranch}" to "${targetBranch}"`);
     return successMergeResult();
   }
 
 
 
   if (stderr.toString().includes("CONFLICT")) {
-    core.error(`Failed to merge commit from "${sourceBranch} to ${targetBranch}". Conflict detected`);
+    core.error(`Failed to merge commit from "${sourceBranch}" to "${targetBranch}". Conflict detected`);
     return failMergeResult(stderr.toString());
   }
 
-  core.error(`Failed to merge commit from ${sourceBranch} to ${targetBranch}`);
+  core.error(`Failed to merge commit from "${sourceBranch}" to "${targetBranch}"`);
   return failMergeResult(stderr.toString());
 }

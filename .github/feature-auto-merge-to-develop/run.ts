@@ -84,18 +84,29 @@ await revertCommit({
 })
 core.endGroup()
 
-core.startGroup(`Creating new pull request based on the parent pull request "${parentPullRequestMergeBaseBranch}"...`);
 const mergeTitleInfo = mergeTitle(parentPullRequest.title, triggerPullRequest.title);
 
 
 if (mergeTitleInfo.merged === true) {
+  core.notice(`Successfully merged pull requests titles automatically`);
   await squashMergeCommit({
     gitHubToken: TOKEN,
     commitMessage: mergeTitleInfo.title,
     sourceBranch: parentPullRequest.head.ref,
     targetBranch: parentPullRequest.base.ref,
   });
+
+  await octokit.rest.pulls.update({
+    owner: github.context.repo.owner,
+    repo: github.context.repo.repo,
+    pull_number: parentPullRequest.number,
+    title: mergeTitleInfo.title,
+  });
+
 } else {
+  core.startGroup(`Creating new pull request based on the parent pull request "${parentPullRequestMergeBaseBranch}"...`);
+
+  core.notice(`Can't merge pull requests titles automatically ${mergeTitleInfo.reason}`);
   const createdPullRequest = await createNewPullRequestByParent({
     githubToken: TOKEN,
     parentPullRequest: {
@@ -108,8 +119,6 @@ if (mergeTitleInfo.merged === true) {
     title: parentPullRequest.title,
   });
 
-
-  core.notice(`Can't merge pull requests titles automatically ${mergeTitleInfo.reason}`);
-  throw Error(`Please verify/update the title of the new PR(${createdPullRequest.html_url}) and merge manually`);
+  core.setFailed(`Please verify/update the title of the new PR(${createdPullRequest.html_url}) and merge manually`);
+  core.endGroup();
 }
-core.endGroup();
