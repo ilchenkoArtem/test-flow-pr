@@ -96,8 +96,7 @@ try {
       body: `This PR is created automatically after the revert of PR [${parentPullRequest.title}](${parentPullRequest.url}) from ${parentPullRequest.base.ref}.`,
     });
   } catch (e) {
-    core.setFailed(e.message);
-    process.exit(1);
+    throw Error(`Failed to create a new pull request: ${e.message}`);
   }
 
 
