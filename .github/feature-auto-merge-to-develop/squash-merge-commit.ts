@@ -17,21 +17,20 @@ const failMergeResult = (error: string): MergeResult => {
   return {merged: false, error};
 }
 
+const successMergeResult = (): MergeResult => {
+  return {merged: true};
+}
+
 export const squashMergeCommit = async ({targetBranch, sourceBranch, commitMessage, gitHubToken}: SquashMergeCommitArgs) => {
   await addGitConfig({gitHubToken});
 
   await $`git checkout ${targetBranch}`;
-  const { stderr, exitCode} = await $`git merge --squash origin/${sourceBranch}`.nothrow();
+  const { stderr, exitCode} = await $`git merge --squash origin/${sourceBranch}`.nothrow()
 
-  console.log('stderr', stderr.toString());
-
-  if (stderr) {
-    await $`git merge --abort`.nothrow().quiet();
-    return failMergeResult(stderr.toString());
+  if (stderr.toString().includes("Automatic merge went well")) {
+    await $`git commit -m "${commitMessage}"`;
+    return successMergeResult();
   }
 
-  await $`git commit -m "${commitMessage}"`;
-  await $`git push origin ${targetBranch}`;
-
-  return {merged: true};
+  return failMergeResult(stderr.toString());
 }
