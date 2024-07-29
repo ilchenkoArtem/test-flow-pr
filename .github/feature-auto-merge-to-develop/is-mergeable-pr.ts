@@ -21,11 +21,9 @@ export const isMergeable = ({prNumber, githubToken}: IsMergeablePrArgs) => {
         core.info(`GitHub has started a background job to compute the mergeability. Waiting...`);
         return new Promise((resolve) => setTimeout(resolve, 7000));
       }
+      resolve(pr.mergeable);
     } catch (error) {
       reject(error);
     }
-
-
-    resolve(pr.mergeable);
   })
 }
