@@ -87,7 +87,7 @@ const reverted = await revertCommit({
 if (reverted) {
   core.info(`Adding revert comment to the parent PR(${parentPullRequest.html_url})...`);
   await octokit.rest.issues.createComment({
-    body: `This PR has been reverted after merge of [${parentPullRequest.title}](${parentPullRequest.html_url})`,
+    body: `This PR has been reverted after merge of [${triggerPullRequest.title}](${triggerPullRequest.html_url})`,
     issue_number: parentPullRequest.number,
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
