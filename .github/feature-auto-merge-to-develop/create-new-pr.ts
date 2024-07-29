@@ -27,6 +27,10 @@ export const createNewPullRequestByParent = async ({githubToken, parentPullReque
     body: `This PR is created automatically after the revert of PR [${parentPullRequest.title}](${parentPullRequest.htmlUrl}) from ${parentPullRequest.baseRef}.`,
   });
 
+  core.info(`Pull request created: ${createdPullRequest.html_url}`);
+  core.info(`Title: ${createdPullRequest.title}`);
+
+
 
   core.startGroup(`Add revert comment to parent PR(${parentPullRequest.htmlUrl})`);
   core.info("Adding comment...");

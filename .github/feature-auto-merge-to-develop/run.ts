@@ -39,11 +39,14 @@ const {data: closedPullRequestsByHeadBranch} = await octokit.rest.pulls.list({
   owner: github.context.repo.owner,
   repo: github.context.repo.repo,
   state: 'closed',
-  head: HEAD_BRANCH,
-  baseTitle: "develop",
+  head: BASE_BRANCH,
+  base: 'develop',
   sort: 'updated',
   direction: 'desc',
+  per_page: 10,
 });
+
+console.log('closedPullRequestsByHeadBranch', closedPullRequestsByHeadBranch);
 
 if (closedPullRequestsByHeadBranch.length === 0) {
   core.notice(`No pull requests found for ${HEAD_BRANCH}. Skipping...`);
