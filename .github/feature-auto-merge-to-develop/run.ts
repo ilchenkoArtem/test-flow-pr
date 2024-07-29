@@ -109,13 +109,14 @@ if (mergeTitleInfo.merged) {
 core.endGroup();
 
 
-core.startGroup(`Add comment to parent PR #${parentPullRequest.number}...`);
+core.startGroup(`Add revert comment to parent PR #${parentPullRequest.number}...`);
 await octokit.rest.issues.createComment({
   body: `This PR has been reverted by PR #${MERGED_PR_NUMBER}.`,
   issue_number: parentPullRequest.number,
   owner: github.context.repo.owner,
   repo: github.context.repo.repo,
 });
+core.endGroup();
 
 
 
