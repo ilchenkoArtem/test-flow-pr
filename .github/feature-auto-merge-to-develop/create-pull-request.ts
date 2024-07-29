@@ -7,6 +7,7 @@ interface CreatePullRequestArgs {
   baseBranch: string;
   octokit: InstanceType<typeof GitHub>;
   title: string;
+  basedOnPrNumber?: number;
 }
 
 export const createPullRequest = async ({octokit, baseBranch, headBranch, title}:CreatePullRequestArgs) => {
@@ -15,7 +16,7 @@ export const createPullRequest = async ({octokit, baseBranch, headBranch, title}
     repo: github.context.repo.repo,
     head: baseBranch,
     base: headBranch,
-    baseTitle: title,
+    title: title,
     body: `This PR is created automatically by the action to merge "${baseBranch}" into "${headBranch}"`,
   });
 

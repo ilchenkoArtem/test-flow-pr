@@ -17,6 +17,5 @@ export const addCommentToPr = async ({body, prNumber, octokit}: AddCommentToPrAr
     repo: github.context.repo.repo,
   });
   core.notice(`Comment has been added to PR #${prNumber}`);
-
   return data
 }

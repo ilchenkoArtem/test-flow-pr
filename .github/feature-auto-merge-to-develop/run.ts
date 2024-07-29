@@ -86,17 +86,8 @@ core.endGroup();
 core.startGroup(`Create pull request based on the last merged pull request "${parentPullRequestMergeBaseBranch}"...`);
 const mergeTitleInfo = mergeTitle(parentPullRequest.title, mergedPullRequest.title);
 
-if (mergeTitleInfo.merged) {
+if (mergeTitleInfo.merged === true) {
   core.info(`New PR title: ${mergeTitleInfo.title}`);
-
-  const createdPullRequest = await createPullRequest({
-    octokit,
-    baseBranch: parentPullRequestMergeBaseBranch,
-    headBranch: HEAD_BRANCH,
-    title: mergeTitleInfo.title,
-  });
-
-  core.info(`New PR URL: ${createdPullRequest.html_url}`);
 } else {
   const createdPullRequest = await createPullRequest({
     octokit,
@@ -104,7 +95,8 @@ if (mergeTitleInfo.merged) {
     headBranch: HEAD_BRANCH,
     title: parentPullRequest.title,
   });
-  core.setFailed(`New PR title is not merged. Please update the title of the new PR(${createdPullRequest.html_url}) and merge manually`);
+  core.error("Cannot merge PR title: " + mergeTitleInfo.reason);
+  core.setFailed(`Please verify/update the title of the new PR(${createdPullRequest.html_url}) and merge manually`);
 }
 core.endGroup();
 
