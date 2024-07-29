@@ -4,4 +4,5 @@ const test = 2;
 
 const test3 = 6;
 const test4 = 8;
-const test5 = 9;
+const test5 = 10;
+const test6 = 12;
