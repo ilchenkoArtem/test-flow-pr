@@ -31,9 +31,9 @@ export const squashMergeCommit = async ({targetBranch, sourceBranch, commitMessa
 
   if (stderr.toString().includes("Automatic merge went well")) {
     core.info(`Committing changes...`);
-    const {stdout} = await $`git commit -m "${commitMessage}"`;
+    const { stderr} = await $`git commit -m "${commitMessage}"`;
 
-    if (stdout.toString().includes("Already on")) {
+    if (stderr.toString().includes("Already on")) {
       core.notice(`Branch "${sourceBranch}" has already been merged to "${targetBranch}"`);
     }
 
