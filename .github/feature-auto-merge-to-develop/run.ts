@@ -86,38 +86,36 @@ try {
   core.startGroup(`Creating new pull request based on the parent pull request "${parentPullRequestMergeBaseBranch}"...`);
   const mergeTitleInfo = mergeTitle(parentPullRequest.title, triggerPullRequest.title);
 
-  try {
-    const {data: createdPullRequest} = await octokit.rest.pulls.create({
-      owner: github.context.repo.owner,
-      repo: github.context.repo.repo,
-      head: parentPullRequest.head.ref,
-      base: parentPullRequest.base.ref,
-      title: mergeTitleInfo.merged ? mergeTitleInfo.title : parentPullRequest.title,
-      body: `This PR is created automatically after the revert of PR [${parentPullRequest.title}](${parentPullRequest.url}) from ${parentPullRequest.base.ref}.`,
-    });
-  } catch (e) {
-    throw Error(`Failed to create a new pull request: ${e.message}`);
-  }
+  const {data: createdPullRequest} = await octokit.rest.pulls.create({
+    owner: github.context.repo.owner,
+    repo: github.context.repo.repo,
+    head: parentPullRequest.head.ref,
+    base: parentPullRequest.base.ref,
+    title: mergeTitleInfo.merged ? mergeTitleInfo.title : parentPullRequest.title,
+    body: `This PR is created automatically after the revert of PR [${parentPullRequest.title}](${parentPullRequest.html_url}) from ${parentPullRequest.base.ref}.`,
+  });
 
 
   if (mergeTitleInfo.merged === true) {
     core.info("PR created successfully:");
-    core.info(`Title: ${mergeTitleInfo.title}`);
-    core.info(`URL: ${triggerPullRequest.html_url}`);
+    core.info(`Title: ${createdPullRequest.title}`);
+    core.info(`URL: ${createdPullRequest.html_url}`);
   } else {
     core.notice(`Can't merge pull requests titles automatically ${mergeTitleInfo.reason}`);
-    throw Error(`Please verify/update the title of the new PR(${triggerPullRequest.html_url}) and merge manually`);
+    throw Error(`Please verify/update the title of the new PR(${createdPullRequest.html_url}) and merge manually`);
   }
   core.endGroup();
 
 
-  core.startGroup(`Add revert comment to parent PR #${parentPullRequest.number}...`);
+  core.startGroup(`Add revert comment to parent PR(${parentPullRequest.html_url})`);
+  core.info("Adding comment...");
   await octokit.rest.issues.createComment({
-    body: `This PR has been reverted by PR #${MERGED_PR_NUMBER}.`,
+    body: `This PR has been reverted after merge of [${createdPullRequest.title}](${parentPullRequest.html_url}})`,
     issue_number: parentPullRequest.number,
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
   });
+  core.info("Successfully added")
   core.endGroup();
 } catch (e) {
   core.setFailed(e.message);
