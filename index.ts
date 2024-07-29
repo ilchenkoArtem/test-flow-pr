@@ -2,4 +2,4 @@ const test = 1;
 
 const test = 2;
 
-const test3 = 42
+const test3 = 3
