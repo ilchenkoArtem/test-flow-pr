@@ -25,7 +25,7 @@ export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken
   }
 
   if (revertErrorMessage.includes("After resolving the conflicts, mark them with")) {
-    core.setFailed(`Failed to revert commit "${commitToRevert}". Please resolve the conflicts manually and run the action again`);
+    core.setFailed(`Failed to revert commit "${commitToRevert}". Please resolve the conflicts and revert commit manually after that run the action again`);
     process.exit(1);
   }
 
