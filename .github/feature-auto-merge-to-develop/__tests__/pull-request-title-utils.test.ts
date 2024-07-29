@@ -1,9 +1,10 @@
 import {describe, expect, it} from 'vitest';
 import {
+  createPrTitle, failMergeResult,
   getGitFlowType,
   getTaskNumbers, getTitleDescription,
   isPullRequestTitleWithoutTaskNumbers,
-  isPullRequestTitleWithTaskNumbers
+  isPullRequestTitleWithTaskNumbers, mergeTitle, successMergeResult
 } from '../pull-request-title-utils';
 
 describe('pull-request-title-utils', () => {
@@ -153,6 +154,81 @@ describe('pull-request-title-utils', () => {
     testCases.forEach(({input, expected}) => {
       it(`should return ${expected} for "${input}"`, () => {
         expect(getTitleDescription(input)).toEqual(expected);
+      });
+    });
+  })
+
+  describe("createTitle", () => {
+    const testCases = [
+      {
+        flowType: "feat",
+        taskNumbers: ["FL-1234", "FL-1235"],
+        description: "text",
+        expected: "feat(FL-1234, FL-1235): text",
+      },
+      {
+        flowType: "feat",
+        taskNumbers: ["FL-1234"],
+        description: "text",
+        expected: "feat(FL-1234): text",
+      },
+      {
+        flowType: "feat",
+        taskNumbers: [],
+        description: "text",
+        expected: "feat: text",
+      },
+    ];
+
+    testCases.forEach(({flowType, taskNumbers, description, expected}) => {
+      it(`should return ${expected} for "${flowType}", "${taskNumbers}" and "${description}"`, () => {
+        expect(createPrTitle(flowType, taskNumbers, description)).toEqual(expected);
+      });
+    });
+  })
+
+  describe("mergeTitle", () => {
+    const testCases = [
+      {
+        baseTitle: "feat: text",
+        newTitle: "feat: new text",
+        expected: successMergeResult("feat: text"),
+      },
+      {
+        baseTitle: "feat(FL-1234): text",
+        newTitle: "feat(FL-1234): new text",
+        expected: successMergeResult("feat(FL-1234): text"),
+      },
+      {
+        baseTitle: "feat(FL-1234, FL-1222): text",
+        newTitle: "feat(FL-1244): new text",
+        expected: successMergeResult("feat(FL-1234, FL-1222, FL-1244): text"),
+      },
+      {
+        baseTitle: "feat(FL-1234): text",
+        newTitle: "feat: new text",
+        expected: successMergeResult("feat(FL-1234): text"),
+      },
+      {
+        baseTitle: "feat: text",
+        newTitle: "feat(FL-1234): new text",
+        expected: successMergeResult("feat(FL-1234): text"),
+      },
+      {
+        baseTitle: "feat(chore): text",
+        newTitle: "feat: new text",
+        expected: failMergeResult(`Base title "feat(chore): text" is not valid`),
+      },
+      {
+        baseTitle: "feat: text",
+        newTitle: "feat(chore): new text",
+        expected: failMergeResult(`New title "feat(chore): new text" is not valid`),
+      }
+    ]
+
+    testCases.forEach(({baseTitle, newTitle, expected}) => {
+      it(`mainTitle: "${baseTitle}" and newTitle: "${newTitle}"`, () => {
+        expect(mergeTitle(baseTitle, newTitle)).toEqual(expected);
       });
     });
   })

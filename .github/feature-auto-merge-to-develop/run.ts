@@ -20,7 +20,7 @@ const {data: closedPullRequestsByHeadBranch} = await octokit.rest.pulls.list({
   repo: github.context.repo.repo,
   state: 'closed',
   head: HEAD_BRANCH,
-  base: "develop",
+  baseTitle: "develop",
   sort: 'updated',
   direction: 'desc',
 });
@@ -90,7 +90,7 @@ const {data: newPullRequest} = await octokit.rest.pulls.create({
   repo: github.context.repo.repo,
   input: `Merge ${parentPullRequestMergeBaseBranch} into develop`,
   head: parentPullRequestMergeBaseBranch,
-  base: "develop",
+  baseTitle: "develop",
   body: `This PR is created automatically by the action to merge "${parentPullRequestMergeBaseBranch}" into "develop"`,
 });
 

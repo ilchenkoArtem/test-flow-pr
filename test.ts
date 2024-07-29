@@ -17,7 +17,7 @@ const {data: closedPullRequestsByHeadBranch} = await octokit.rest.pulls.list({
   repo: github.context.repo.repo,
   state: 'closed',
   head: HEAD_BRANCH,
-  base: "develop",
+  baseTitle: "develop",
   sort: 'updated',
   direction: 'desc',
 });
