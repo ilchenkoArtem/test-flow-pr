@@ -26,7 +26,7 @@ export const squashMergeCommit = async ({targetBranch, sourceBranch, commitMessa
   console.log('stderr', stderr.toString());
 
   if (stderr) {
-    await $`git merge --abort`.nothrow();
+    await $`git merge --abort`.nothrow().quiet();
     return failMergeResult(stderr.toString());
   }
 
