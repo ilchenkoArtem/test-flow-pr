@@ -89,12 +89,12 @@ const mergeTitleInfo = mergeTitle(parentPullRequest.title, triggerPullRequest.ti
 
 
 if (mergeTitleInfo.merged === true) {
-  await squashMergeCommit({
+  /*await squashMergeCommit({
     gitHubToken: TOKEN,
     commitMessage: mergeTitleInfo.title,
     sourceBranch: parentPullRequest.head.ref,
     targetBranch: parentPullRequest.base.ref,
-  });
+  });*/
 } else {
   const createdPullRequest = await createNewPullRequestByParent({
     githubToken: TOKEN,
