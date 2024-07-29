@@ -90,11 +90,10 @@ const mergeTitleInfo = mergeTitle(parentPullRequest.title, triggerPullRequest.ti
 
 if (mergeTitleInfo.merged === true) {
   await squashMergeCommit({
-    githubToken: TOKEN,
-    headBranch: HEAD_BRANCH,
-    baseBranch: BASE_BRANCH,
-    title: mergeTitleInfo.title,
-    parentPullRequest: parentPullRequest,
+    gitHubToken: TOKEN,
+    commitMessage: mergeTitleInfo.title,
+    sourceBranch: parentPullRequest.head.ref,
+    targetBranch: parentPullRequest.base.ref,
   });
 } else {
   const createdPullRequest = await createNewPullRequestByParent({
