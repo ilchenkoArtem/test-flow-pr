@@ -31,14 +31,16 @@ export const squashMergeCommit = async ({targetBranch, sourceBranch, commitMessa
 
   if (stderr.toString().includes("Automatic merge went well")) {
     core.info(`Committing changes...`);
-    await $`git commit -m "${commitMessage}"`;
+    const {stdout} = await $`git commit -m "${commitMessage}"`;
+
+    if (stdout.toString().includes("Already on")) {
+      core.notice(`Branch "${sourceBranch}" has already been merged to "${targetBranch}"`);
+    }
+
     return successMergeResult();
   }
 
-  if (stderr.toString().includes("Already on")) {
-    core.notice(`Branch "${sourceBranch}" has already been merged to "${targetBranch}"`);
-    return successMergeResult();
-  }
+
 
   if (stderr.toString().includes("CONFLICT")) {
     core.error(`Failed to merge commit from "${sourceBranch} to ${targetBranch}". Conflict detected`);
