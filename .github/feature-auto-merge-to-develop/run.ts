@@ -122,5 +122,4 @@ try {
   core.endGroup();
 } catch (e) {
   core.setFailed(e.message);
-  process.exit(1);
 }
