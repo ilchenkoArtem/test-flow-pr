@@ -4,7 +4,6 @@ import * as process from 'node:process';
 import {revertCommit} from './revert-commit';
 import {mergeTitle} from './pull-request-title-utils';
 import {createNewPullRequestByParent} from './create-new-pr';
-import {squashMergeCommit} from './squash-merge-commit';
 
 
 const TOKEN = process.env.GITHUB_TOKEN;
@@ -97,39 +96,41 @@ core.endGroup()
 
 const mergeTitleInfo = mergeTitle(parentPullRequest.title, triggerPullRequest.title);
 
+core.startGroup(`Merge to ${parentPullRequest.base.ref}`);
+core.info(`Creating new pull request based on the parent pull request "${parentPullRequestMergeBaseBranch}"...`);
+const createdPullRequest = await createNewPullRequestByParent({
+  githubToken: TOKEN,
+  parentPullRequest: {
+    headRef: parentPullRequest.head.ref,
+    baseRef: parentPullRequest.base.ref,
+    title: parentPullRequest.title,
+    htmlUrl: parentPullRequest.html_url,
+    number: parentPullRequest.number
+  },
+  title: parentPullRequest.title,
+});
 
 if (mergeTitleInfo.merged === true) {
-  core.notice(`Successfully merged pull requests titles automatically`);
-  await squashMergeCommit({
-    gitHubToken: TOKEN,
-    commitMessage: mergeTitleInfo.title,
-    sourceBranch: parentPullRequest.head.ref,
-    targetBranch: parentPullRequest.base.ref,
-  });
+  core.info(`Pull request title is valid. Merging...`);
 
-  await octokit.rest.pulls.update({
+  if (!createdPullRequest.mergeable) {
+    core.setFailed(`Pull request is not mergeable`);
+    process.exit(1);
+  }
+
+  await octokit.rest.pulls.merge({
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
-    pull_number: parentPullRequest.number,
-    title: mergeTitleInfo.title,
+    pull_number: createdPullRequest.number,
+    commit_title: mergeTitleInfo.title,
+    merge_method: 'squash',
   });
 
+  core.notice(`PR(${createdPullRequest.html_url}) has been merged`);
 } else {
-  core.startGroup(`Creating new pull request based on the parent pull request "${parentPullRequestMergeBaseBranch}"...`);
-
   core.notice(`Can't merge pull requests titles automatically ${mergeTitleInfo.reason}`);
-  const createdPullRequest = await createNewPullRequestByParent({
-    githubToken: TOKEN,
-    parentPullRequest: {
-      headRef: parentPullRequest.head.ref,
-      baseRef: parentPullRequest.base.ref,
-      title: parentPullRequest.title,
-      htmlUrl: parentPullRequest.html_url,
-      number: parentPullRequest.number
-    },
-    title: parentPullRequest.title,
-  });
-
   core.setFailed(`Please verify/update the title of the new PR(${createdPullRequest.html_url}) and merge manually`);
-  core.endGroup();
+  process.exit(1)
 }
+core.endGroup();
+
