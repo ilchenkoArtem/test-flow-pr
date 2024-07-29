@@ -97,6 +97,7 @@ if (reverted) {
 core.endGroup()
 
 const mergeTitleInfo = mergeTitle(parentPullRequest.title, triggerPullRequest.title);
+core.info(`Merge title info: ${JSON.stringify(mergeTitleInfo)}`);
 
 core.startGroup(`Merge to ${parentPullRequest.base.ref}`);
 core.info(`Creating new pull request based on the parent pull request "${parentPullRequestMergeBaseBranch}"...`);
@@ -109,7 +110,7 @@ const createdPullRequest = await createNewPullRequestByParent({
     htmlUrl: parentPullRequest.html_url,
     number: parentPullRequest.number
   },
-  title: parentPullRequest.title,
+  title: mergeTitleInfo.merged ? mergeTitleInfo.title : triggerPullRequest.title,
 });
 
 if (mergeTitleInfo.merged === true) {
