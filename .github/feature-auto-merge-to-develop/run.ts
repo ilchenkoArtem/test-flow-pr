@@ -92,7 +92,7 @@ const {data: createdPullRequest} = await octokit.rest.pulls.create({
   head: parentPullRequest.head.ref,
   base: parentPullRequest.base.ref,
   title: mergeTitleInfo.merged ? mergeTitleInfo.title : parentPullRequest.title,
-  body: `This PR is created automatically after the revert of PR [${parentPullRequest.title}](${parentPullRequest.url}) from ${byPullRequest.base.ref}.`,
+  body: `This PR is created automatically after the revert of PR [${parentPullRequest.title}](${parentPullRequest.url}) from ${parentPullRequest.base.ref}.`,
 });
 
 if (mergeTitleInfo.merged === true) {
