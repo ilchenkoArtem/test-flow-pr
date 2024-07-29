@@ -21,7 +21,7 @@ export const squashMergeCommit = async ({targetBranch, sourceBranch, commitMessa
   await addGitConfig({gitHubToken});
 
   await $`git checkout ${targetBranch}`;
-  const { stderr, exitCode} = await $`git merge --squash ${sourceBranch}`.nothrow();
+  const { stderr, exitCode} = await $`git merge --squash origin/${sourceBranch}`.nothrow();
 
   if (stderr || exitCode === 1) {
     await $`git merge --abort`;
