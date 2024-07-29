@@ -3,7 +3,6 @@ import * as github from '@actions/github';
 import * as process from 'node:process';
 import {revertCommit} from './revert-commit';
 import {mergeTitle} from './pull-request-title-utils';
-import {createPullRequestBy} from './create-pull-request-by';
 
 
 const TOKEN = process.env.GITHUB_TOKEN;
@@ -12,6 +11,24 @@ const BASE_BRANCH = process.env.BASE_BRANCH; //to branch
 const MERGED_PR_NUMBER = process.env.PR_NUMBER;
 
 const octokit = github.getOctokit(TOKEN);
+
+core.info(`Getting merged pull request info...`);
+const {data: triggerPullRequest} = await octokit.rest.pulls.get({
+  owner: github.context.repo.owner,
+  repo: github.context.repo.repo,
+  pull_number: parseFloat(MERGED_PR_NUMBER),
+});
+
+if (!triggerPullRequest) {
+  core.setFailed(`Pull request #${MERGED_PR_NUMBER} is not found`);
+  process.exit(1);
+}
+
+core.startGroup(`Info:`);
+core.info(`URL: ${triggerPullRequest.html_url}`);
+core.info(`Title: ${triggerPullRequest.title}`);
+core.info(`Merged at: ${new Date(triggerPullRequest.merged_at).toLocaleDateString()}`);
+core.endGroup();
 
 /* --------------------- Get last merged pull request info --------------------- */
 core.startGroup(`Last merged pull request info:`);
@@ -65,26 +82,8 @@ await revertCommit({
 })
 core.endGroup()
 
-core.info(`Getting new pull request #${MERGED_PR_NUMBER} info...`);
-const {data: mergedPullRequest} = await octokit.rest.pulls.get({
-  owner: github.context.repo.owner,
-  repo: github.context.repo.repo,
-  pull_number: parseFloat(MERGED_PR_NUMBER),
-});
-
-if (!mergedPullRequest) {
-  core.setFailed(`Pull request #${MERGED_PR_NUMBER} is not found`);
-  process.exit(1);
-}
-
-core.startGroup(`PR #${MERGED_PR_NUMBER} info:`);
-core.info(`URL: ${mergedPullRequest.html_url}`);
-core.info(`Title: ${mergedPullRequest.title}`);
-core.info(`Merged at: ${new Date(mergedPullRequest.merged_at).toLocaleDateString()}`);
-core.endGroup();
-
-core.startGroup(`Create new pull request based on the parent pull request "${parentPullRequestMergeBaseBranch}"...`);
-const mergeTitleInfo = mergeTitle(parentPullRequest.title, mergedPullRequest.title);
+core.startGroup(`Creating new pull request based on the parent pull request "${parentPullRequestMergeBaseBranch}"...`);
+const mergeTitleInfo = mergeTitle(parentPullRequest.title, triggerPullRequest.title);
 
 const {data: createdPullRequest} = await octokit.rest.pulls.create({
   owner: github.context.repo.owner,
