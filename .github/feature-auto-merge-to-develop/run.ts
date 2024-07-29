@@ -51,7 +51,7 @@ if (closedPullRequestsByHeadBranch.length === 0) {
 }
 
 const mergedPullRequestsByHeadBranch = closedPullRequestsByHeadBranch.filter(
-  (pr) => !!pr.merged_at
+  (pr) => !!pr.merged_at && pr.number !== parseFloat(MERGED_PR_NUMBER)
 );
 
 if (mergedPullRequestsByHeadBranch.length === 0) {
