@@ -85,14 +85,20 @@ core.endGroup()
 core.startGroup(`Creating new pull request based on the parent pull request "${parentPullRequestMergeBaseBranch}"...`);
 const mergeTitleInfo = mergeTitle(parentPullRequest.title, triggerPullRequest.title);
 
-const {data: createdPullRequest} = await octokit.rest.pulls.create({
-  owner: github.context.repo.owner,
-  repo: github.context.repo.repo,
-  head: parentPullRequest.head.ref,
-  base: parentPullRequest.base.ref,
-  title: mergeTitleInfo.merged ? mergeTitleInfo.title : parentPullRequest.title,
-  body: `This PR is created automatically after the revert of PR [${parentPullRequest.title}](${parentPullRequest.url}) from ${parentPullRequest.base.ref}.`,
-});
+try {
+  const {data: createdPullRequest} = await octokit.rest.pulls.create({
+    owner: github.context.repo.owner,
+    repo: github.context.repo.repo,
+    head: parentPullRequest.head.ref,
+    base: parentPullRequest.base.ref,
+    title: mergeTitleInfo.merged ? mergeTitleInfo.title : parentPullRequest.title,
+    body: `This PR is created automatically after the revert of PR [${parentPullRequest.title}](${parentPullRequest.url}) from ${parentPullRequest.base.ref}.`,
+  });
+} catch (e) {
+  core.setFailed(e.message);
+  process.exit(1);
+}
+
 
 if (mergeTitleInfo.merged === true) {
   core.info("PR created successfully:");
