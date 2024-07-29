@@ -12,5 +12,5 @@ export const addGitConfig = async ({gitHubToken}: AddGitConfigArgs) => {
   await $`git remote set-url origin https://x-access-token:${gitHubToken}@github.com/${repoFullName}.git`
   await $`git config --global user.email "github-actions[bot]@users.noreply.github.com"`
   await $`git config --global user.name "github-actions[bot]"`
-  core.notice(`Git config has been added`)
+  core.info(`Git config has been added`)
 }

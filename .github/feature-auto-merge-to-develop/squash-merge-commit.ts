@@ -35,6 +35,16 @@ export const squashMergeCommit = async ({targetBranch, sourceBranch, commitMessa
     return successMergeResult();
   }
 
+  if (stderr.toString().includes("Already on")) {
+    core.notice(`Branch "${sourceBranch}" has already been merged to "${targetBranch}"`);
+    return successMergeResult();
+  }
+
+  if (stderr.toString().includes("CONFLICT")) {
+    core.error(`Failed to merge commit from "${sourceBranch} to ${targetBranch}". Conflict detected`);
+    return failMergeResult(stderr.toString());
+  }
+
   core.error(`Failed to merge commit from ${sourceBranch} to ${targetBranch}`);
   return failMergeResult(stderr.toString());
 }
