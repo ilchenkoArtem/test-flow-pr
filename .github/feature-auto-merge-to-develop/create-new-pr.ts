@@ -15,7 +15,7 @@ interface CreateNewPrArgs {
   }
 }
 
-export const createNewPullRequestByParent = async ({githubToken, parentPullRequest}: CreateNewPrArgs) => {
+export const createNewPullRequestByParent = async ({githubToken, parentPullRequest, title}: CreateNewPrArgs) => {
   const octokit = github.getOctokit(githubToken);
 
   const {data: createdPullRequest} = await octokit.rest.pulls.create({
@@ -23,7 +23,7 @@ export const createNewPullRequestByParent = async ({githubToken, parentPullReque
     repo: github.context.repo.repo,
     head: parentPullRequest.headRef,
     base: parentPullRequest.baseRef,
-    title: parentPullRequest.title,
+    title: title,
     body: `This PR is created automatically after the revert of PR [${parentPullRequest.title}](${parentPullRequest.htmlUrl}) from ${parentPullRequest.baseRef}.`,
   });
 
