@@ -3,7 +3,7 @@ import * as github from '@actions/github';
 import * as process from 'node:process';
 import {revertCommit} from './revert-commit';
 import {mergeTitle} from './pull-request-title-utils';
-import {createPullRequest} from './create-pull-request';
+import {createPullRequestBy} from './create-pull-request-by';
 
 
 const TOKEN = process.env.GITHUB_TOKEN;
@@ -83,27 +83,24 @@ core.info(`Title: ${mergedPullRequest.title}`);
 core.info(`Merged at: ${new Date(mergedPullRequest.merged_at).toLocaleDateString()}`);
 core.endGroup();
 
-core.startGroup(`Create pull request based on the last merged pull request "${parentPullRequestMergeBaseBranch}"...`);
+core.startGroup(`Create new pull request based on the parent pull request "${parentPullRequestMergeBaseBranch}"...`);
 const mergeTitleInfo = mergeTitle(parentPullRequest.title, mergedPullRequest.title);
 
+const {data: createdPullRequest} = await octokit.rest.pulls.create({
+  owner: github.context.repo.owner,
+  repo: github.context.repo.repo,
+  head: parentPullRequest.head.ref,
+  base: parentPullRequest.base.ref,
+  title: mergeTitleInfo.merged ? mergeTitleInfo.title : parentPullRequest.title,
+  body: `This PR is created automatically after the revert of PR [${parentPullRequest.title}](${parentPullRequest.url}) from ${byPullRequest.base.ref}.`,
+});
+
 if (mergeTitleInfo.merged === true) {
-  const createdPullRequest = await createPullRequest({
-    octokit,
-    baseBranch: parentPullRequestMergeBaseBranch,
-    headBranch: HEAD_BRANCH,
-    title: mergeTitleInfo.title,
-  });
   core.info("PR created successfully:");
   core.info(`Title: ${mergeTitleInfo.title}`);
   core.info(`URL: ${createdPullRequest.html_url}`);
 } else {
-  const createdPullRequest = await createPullRequest({
-    octokit,
-    baseBranch: parentPullRequestMergeBaseBranch,
-    headBranch: HEAD_BRANCH,
-    title: parentPullRequest.title,
-  });
-  core.error("Cannot merge PR title: " + mergeTitleInfo.reason);
+  core.error(`Can't merge pull requests titles automatically ${mergeTitleInfo.reason}`);
   core.setFailed(`Please verify/update the title of the new PR(${createdPullRequest.html_url}) and merge manually`);
 }
 core.endGroup();
