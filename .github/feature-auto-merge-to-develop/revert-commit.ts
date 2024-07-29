@@ -8,7 +8,7 @@ interface RevertCommitArgs {
   repoFullName: string;
 }
 
-export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken, repoFullName}: RevertCommitArgs) => {
+export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken, repoFullName}: RevertCommitArgs):Promise<boolean> => {
   await $`git remote set-url origin https://x-access-token:${gitHubToken}@github.com/${repoFullName}.git`
   await $`git config --global user.email "github-actions[bot]@users.noreply.github.com"`
   await $`git config --global user.name "github-actions[bot]"`
@@ -21,7 +21,7 @@ export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken
 
   if (revertResultMessage.includes("Your branch is up to date")) {
     core.notice(`Commit "${commitToRevert}" has already been reverted`)
-    return;
+    return false;
   }
 
   if (revertErrorMessage.includes("After resolving the conflicts, mark them with")) {
@@ -42,6 +42,7 @@ export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken
   await $`git push origin ${branchForRevert}`
 
   core.notice(`Commit "${commitToRevert}" has been reverted on branch "${branchForRevert}"`)
+  return true;
 }
 
 

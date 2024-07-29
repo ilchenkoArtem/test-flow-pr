@@ -75,13 +75,24 @@ if (!parentPullRequestMergeCommit) {
   process.exit(1);
 }
 
-core.startGroup(`Reverting commit "${parentPullRequestMergeCommit}"...`);
-await revertCommit({
+core.startGroup(`Revert commit "${parentPullRequestMergeCommit}"`);
+const reverted = await revertCommit({
   branchForRevert: parentPullRequestMergeBaseBranch,
   commitToRevert: parentPullRequestMergeCommit,
   gitHubToken: TOKEN,
   repoFullName: `${github.context.repo.owner}/${github.context.repo.repo}`,
 })
+
+if (reverted) {
+  core.info(`Adding revert comment to the parent PR(${parentPullRequest.html_url})...`);
+  await octokit.rest.issues.createComment({
+    body: `This PR has been reverted after merge of [${parentPullRequest.title}](${parentPullRequest.html_url})`,
+    issue_number: parentPullRequest.number,
+    owner: github.context.repo.owner,
+    repo: github.context.repo.repo,
+  });
+}
+
 core.endGroup()
 
 const mergeTitleInfo = mergeTitle(parentPullRequest.title, triggerPullRequest.title);
