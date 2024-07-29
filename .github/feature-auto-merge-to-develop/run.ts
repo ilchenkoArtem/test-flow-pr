@@ -4,6 +4,7 @@ import * as process from 'node:process';
 import {revertCommit} from './revert-commit';
 import {mergeTitle} from './pull-request-title-utils';
 import {createNewPullRequestByParent} from './create-new-pr';
+import {isMergeable} from './is-mergeable-pr';
 
 
 const TOKEN = process.env.GITHUB_TOKEN;
@@ -74,7 +75,7 @@ if (!parentPullRequestMergeCommit) {
   process.exit(1);
 }
 
-core.startGroup(`Revert commit "${parentPullRequestMergeCommit}"`);
+core.startGroup(`Revert commit "${parentPullRequestMergeCommit}" from "${parentPullRequest.base.ref}"`);
 const reverted = await revertCommit({
   branchForRevert: parentPullRequestMergeBaseBranch,
   commitToRevert: parentPullRequestMergeCommit,
@@ -113,10 +114,12 @@ const createdPullRequest = await createNewPullRequestByParent({
 if (mergeTitleInfo.merged === true) {
   core.info(`Pull request title is valid. Merging...`);
 
-  /*if (!createdPullRequest.mergeable) {
+  const mergeable = await isMergeable({prNumber: createdPullRequest.number, githubToken: TOKEN});
+
+  if (!mergeable) {
     core.setFailed(`Pull request is not mergeable`);
     process.exit(1);
-  }*/
+  }
 
   await octokit.rest.pulls.merge({
     owner: github.context.repo.owner,
