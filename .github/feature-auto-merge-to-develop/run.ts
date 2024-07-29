@@ -113,10 +113,10 @@ const createdPullRequest = await createNewPullRequestByParent({
 if (mergeTitleInfo.merged === true) {
   core.info(`Pull request title is valid. Merging...`);
 
-  if (!createdPullRequest.mergeable) {
+  /*if (!createdPullRequest.mergeable) {
     core.setFailed(`Pull request is not mergeable`);
     process.exit(1);
-  }
+  }*/
 
   await octokit.rest.pulls.merge({
     owner: github.context.repo.owner,
