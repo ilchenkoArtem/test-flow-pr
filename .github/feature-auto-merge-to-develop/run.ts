@@ -87,7 +87,15 @@ core.startGroup(`Create pull request based on the last merged pull request "${pa
 const mergeTitleInfo = mergeTitle(parentPullRequest.title, mergedPullRequest.title);
 
 if (mergeTitleInfo.merged === true) {
-  core.info(`New PR title: ${mergeTitleInfo.title}`);
+  const createdPullRequest = await createPullRequest({
+    octokit,
+    baseBranch: parentPullRequestMergeBaseBranch,
+    headBranch: HEAD_BRANCH,
+    title: mergeTitleInfo.title,
+  });
+  core.info("PR created successfully:");
+  core.info(`Title: ${mergeTitleInfo.title}`);
+  core.info(`URL: ${createdPullRequest.html_url}`);
 } else {
   const createdPullRequest = await createPullRequest({
     octokit,
