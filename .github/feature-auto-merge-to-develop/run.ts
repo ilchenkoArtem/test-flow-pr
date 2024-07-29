@@ -2,7 +2,8 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import * as process from 'node:process';
 import {revertCommit} from './revert-commit';
-import {mergeTitle} from './utils';
+import {mergeTitle} from './pull-request-title-utils';
+import {createPullRequest} from './create-pull-request';
 
 
 const TOKEN = process.env.GITHUB_TOKEN;
@@ -83,21 +84,38 @@ core.info(`Merged at: ${new Date(mergedPullRequest.merged_at).toLocaleDateString
 core.endGroup();
 
 core.startGroup(`Create pull request based on the last merged pull request "${parentPullRequestMergeBaseBranch}"...`);
-const title = mergeTitle(mergedPullRequest.title, parentPullRequestMergeBaseBranch);
+const mergeTitleInfo = mergeTitle(parentPullRequest.title, mergedPullRequest.title);
 
-const {data: newPullRequest} = await octokit.rest.pulls.create({
+if (mergeTitleInfo.merged) {
+  core.info(`New PR title: ${mergeTitleInfo.title}`);
+
+  const createdPullRequest = await createPullRequest({
+    octokit,
+    baseBranch: parentPullRequestMergeBaseBranch,
+    headBranch: HEAD_BRANCH,
+    title: mergeTitleInfo.title,
+  });
+
+  core.info(`New PR URL: ${createdPullRequest.html_url}`);
+} else {
+  const createdPullRequest = await createPullRequest({
+    octokit,
+    baseBranch: parentPullRequestMergeBaseBranch,
+    headBranch: HEAD_BRANCH,
+    title: parentPullRequest.title,
+  });
+  core.setFailed(`New PR title is not merged. Please update the title of the new PR(${createdPullRequest.html_url}) and merge manually`);
+}
+core.endGroup();
+
+
+core.startGroup(`Add comment to parent PR #${parentPullRequest.number}...`);
+await octokit.rest.issues.createComment({
+  body: `This PR has been reverted by PR #${MERGED_PR_NUMBER}.`,
+  issue_number: parentPullRequest.number,
   owner: github.context.repo.owner,
   repo: github.context.repo.repo,
-  input: `Merge ${parentPullRequestMergeBaseBranch} into develop`,
-  head: parentPullRequestMergeBaseBranch,
-  baseTitle: "develop",
-  body: `This PR is created automatically by the action to merge "${parentPullRequestMergeBaseBranch}" into "develop"`,
 });
-
-core.info("Pull request has been created");
-core.info(`Title: ${newPullRequest.title}`);
-core.info(`URL: ${newPullRequest.html_url}`);
-core.endGroup();
 
 
 
