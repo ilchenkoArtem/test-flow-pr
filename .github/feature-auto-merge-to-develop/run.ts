@@ -103,10 +103,10 @@ try {
 if (mergeTitleInfo.merged === true) {
   core.info("PR created successfully:");
   core.info(`Title: ${mergeTitleInfo.title}`);
-  core.info(`URL: ${createdPullRequest.html_url}`);
+  core.info(`URL: ${triggerPullRequest.html_url}`);
 } else {
   core.error(`Can't merge pull requests titles automatically ${mergeTitleInfo.reason}`);
-  core.setFailed(`Please verify/update the title of the new PR(${createdPullRequest.html_url}) and merge manually`);
+  core.setFailed(`Please verify/update the title of the new PR(${triggerPullRequest.html_url}) and merge manually`);
 }
 core.endGroup();
 
