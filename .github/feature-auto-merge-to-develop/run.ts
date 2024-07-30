@@ -5,12 +5,14 @@ import {revertCommit} from './revert-commit';
 import {mergeTitle} from './pull-request-title-utils';
 import {createNewPullRequestByParent} from './create-new-pr';
 import {isMergeable} from './is-mergeable-pr';
+import {getEnv} from './utils';
+import {exitWithError} from './utils';
 
 
-const TOKEN = process.env.GITHUB_TOKEN;
-const HEAD_BRANCH = process.env.HEAD_BRANCH; //from branch
-const BASE_BRANCH = process.env.BASE_BRANCH; //to branch
-const MERGED_PR_NUMBER = process.env.PR_NUMBER;
+const TOKEN = getEnv(process.env.GITHUB_TOKEN);
+const HEAD_BRANCH = getEnv(process.env.HEAD_BRANCH); //from branch
+const BASE_BRANCH = getEnv(process.env.BASE_BRANCH); //to branch
+const MERGED_PR_NUMBER = getEnv(process.env.PR_NUMBER);
 
 const octokit = github.getOctokit(TOKEN);
 
@@ -22,8 +24,7 @@ const {data: triggerPullRequest} = await octokit.rest.pulls.get({
 });
 
 if (!triggerPullRequest) {
-  core.setFailed(`Pull request #${MERGED_PR_NUMBER} is not found`);
-  process.exit(1);
+  exitWithError(`Pull request #${MERGED_PR_NUMBER} is not found`);
 }
 
 core.startGroup(`Info:`);
@@ -72,8 +73,7 @@ core.info(`Merged to branch: ${parentPullRequestMergeBaseBranch}`);
 core.endGroup()
 
 if (!parentPullRequestMergeCommit) {
-  core.setFailed(`Merge commit SHA is not found for the last merged pull request`);
-  process.exit(1);
+  exitWithError(`Merge commit SHA is not found for the last merged pull request`);
 }
 
 core.startGroup(`Revert commit "${parentPullRequestMergeCommit}" from "${parentPullRequest.base.ref}"`);
@@ -81,13 +81,12 @@ const reverted = await revertCommit({
   branchForRevert: parentPullRequestMergeBaseBranch,
   commitToRevert: parentPullRequestMergeCommit,
   gitHubToken: TOKEN,
-  repoFullName: `${github.context.repo.owner}/${github.context.repo.repo}`,
-})
+});
 
 if (reverted) {
   core.info(`Adding revert comment to the parent PR(${parentPullRequest.html_url})...`);
   await octokit.rest.issues.createComment({
-    body: `This PR has been reverted after merge of [${parentPullRequest.title}](${parentPullRequest.html_url})`,
+    body: `This PR has been reverted after merge of [${triggerPullRequest.title}](${triggerPullRequest.html_url})`,
     issue_number: parentPullRequest.number,
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
@@ -119,8 +118,7 @@ if (mergeTitleInfo.merged === true) {
   const mergeable = await isMergeable({prNumber: createdPullRequest.number, githubToken: TOKEN});
 
   if (!mergeable) {
-    core.setFailed(`Pull request is not mergeable`);
-    process.exit(1);
+    exitWithError(`Pull request is not mergeable`);
   }
 
   await octokit.rest.pulls.merge({
@@ -134,8 +132,7 @@ if (mergeTitleInfo.merged === true) {
   core.notice(`PR(${createdPullRequest.html_url}) has been merged`);
 } else {
   core.notice(`Can't merge pull requests titles automatically ${mergeTitleInfo.reason}`);
-  core.setFailed(`Please verify/update the title of the new PR(${createdPullRequest.html_url}) and merge manually`);
-  process.exit(1)
+  exitWithError(`Please verify/update the title of the new PR(${createdPullRequest.html_url}) and merge manually`);
 }
 core.endGroup();
 

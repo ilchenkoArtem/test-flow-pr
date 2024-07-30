@@ -1,18 +1,16 @@
 import {$} from 'bun';
 import * as core from '@actions/core';
+import {addGitConfig} from './add-git-config';
+import {exitWithError} from './utils';
 
 interface RevertCommitArgs {
   commitToRevert: string;
   branchForRevert: string;
   gitHubToken: string;
-  repoFullName: string;
 }
 
-export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken, repoFullName}: RevertCommitArgs):Promise<boolean> => {
-  await $`git remote set-url origin https://x-access-token:${gitHubToken}@github.com/${repoFullName}.git`
-  await $`git config --global user.email "github-actions[bot]@users.noreply.github.com"`
-  await $`git config --global user.name "github-actions[bot]"`
-
+export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken}: RevertCommitArgs):Promise<boolean> => {
+  await addGitConfig({gitHubToken});
   await $`git checkout ${branchForRevert}`
 
   const {stderr, stdout} = await $`git revert ${commitToRevert} --no-edit`.quiet().nothrow();
@@ -25,18 +23,15 @@ export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken
   }
 
   if (revertErrorMessage.includes("After resolving the conflicts, mark them with")) {
-    core.setFailed(`Failed to revert commit "${commitToRevert}". Please resolve the conflicts and revert commit manually after that run the action again`);
-    process.exit(1);
+    exitWithError(`Failed to revert commit "${commitToRevert}". Please resolve the conflicts and revert commit manually after that run the action again`);
   }
 
   if (revertErrorMessage.includes("fatal: bad object")) {
-    core.setFailed(`Failed to revert commit "${commitToRevert}". Commit not found`);
-    process.exit(1);
+    exitWithError(`Failed to revert commit "${commitToRevert}". Commit not found`);
   }
 
   if (revertErrorMessage) {
-    core.setFailed(`Failed to revert commit "${commitToRevert}". Error: ${revertErrorMessage}`)
-    process.exit(1);
+    exitWithError(`Failed to revert commit "${commitToRevert}". Error: ${revertErrorMessage}`);
   }
 
   await $`git push origin ${branchForRevert}`

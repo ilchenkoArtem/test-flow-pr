@@ -9,6 +9,8 @@ interface IsMergeablePrArgs {
 export const isMergeable = ({prNumber, githubToken}: IsMergeablePrArgs) => {
   const octokit = github.getOctokit(githubToken);
 
+  //We need to check if the PR is mergeable with promise because GitHub API returns null
+  //for mergeable field when it is computing the mergeability
   return new Promise<boolean>(async (resolve, reject) => {
     try {
       const {data: pr} = await octokit.rest.pulls.get({

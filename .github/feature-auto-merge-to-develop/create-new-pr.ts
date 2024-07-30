@@ -1,8 +1,6 @@
 import * as github from '@actions/github';
 import * as core from '@actions/core';
 
-
-
 interface CreateNewPrArgs {
   githubToken: string;
   title: string;
@@ -35,7 +33,7 @@ export const createNewPullRequestByParent = async ({githubToken, parentPullReque
   core.startGroup(`Add revert comment to parent PR(${parentPullRequest.htmlUrl})`);
   core.info("Adding comment...");
   await octokit.rest.issues.createComment({
-    body: `This PR has been reverted after merge of [${createdPullRequest.title}](${parentPullRequest.headRef}})`,
+    body: `Created an updated pull request [${createdPullRequest.title}](${parentPullRequest.headRef}})`,
     issue_number: parentPullRequest.number,
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
