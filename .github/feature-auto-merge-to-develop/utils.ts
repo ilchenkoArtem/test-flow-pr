@@ -6,7 +6,7 @@ export const getEnv = (key: string): string => {
     core.setFailed(`Env variable ${key} is required`);
     process.exit(1);
   }
-  return value;
+  return value.trim();
 }
 
 
