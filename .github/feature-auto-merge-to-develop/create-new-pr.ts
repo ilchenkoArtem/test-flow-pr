@@ -62,6 +62,7 @@ export const getIfExistOrCreateNewPR = async ({githubToken, title, parentPullReq
   });
 
   if (pullRequests.length === 0) {
+    core.info(`Pull request for ${parentPullRequest.headRef} to ${parentPullRequest.baseRef} does not exist. Creating new pull request`);
     return createNewPullRequestByParent({githubToken, parentPullRequest, title});
   }
 
