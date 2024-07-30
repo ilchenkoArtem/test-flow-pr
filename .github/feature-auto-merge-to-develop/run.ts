@@ -9,10 +9,10 @@ import {getEnv} from './utils';
 import {exitWithError} from './utils';
 
 
-const TOKEN = getEnv(process.env.GITHUB_TOKEN);
-const HEAD_BRANCH = getEnv(process.env.HEAD_BRANCH); //from branch
-const BASE_BRANCH = getEnv(process.env.BASE_BRANCH); //to branch
-const MERGED_PR_NUMBER = getEnv(process.env.PR_NUMBER);
+const TOKEN = getEnv("GITHUB_TOKEN");
+const HEAD_BRANCH = getEnv("HEAD_BRANCH"); //from branch
+const BASE_BRANCH = getEnv("BASE_BRANCH"); //to branch
+const MERGED_PR_NUMBER = getEnv("PR_NUMBER");
 
 const octokit = github.getOctokit(TOKEN);
 

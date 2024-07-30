@@ -2,7 +2,7 @@ import * as core from '@actions/core';
 import {exitWithError, getEnv} from './utils';
 import {isValidPullRequestTitle} from './pull-request-title-utils';
 
-const PR_TITLE = getEnv(process.env.PR_TITLE);
+const PR_TITLE = getEnv("PR_TITLE");
 const isValid = isValidPullRequestTitle(PR_TITLE);
 
 if (isValid) {
