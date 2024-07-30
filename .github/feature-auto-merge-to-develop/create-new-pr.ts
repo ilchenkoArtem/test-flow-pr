@@ -1,8 +1,6 @@
 import * as github from '@actions/github';
 import * as core from '@actions/core';
 
-
-
 interface CreateNewPrArgs {
   githubToken: string;
   title: string;
