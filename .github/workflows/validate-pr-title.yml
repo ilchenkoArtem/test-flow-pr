@@ -16,4 +16,4 @@ jobs:
         uses: oven-sh/setup-bun@v2
 
       - name: Validate PR title
-        run: bun ../feature-auto-merge-to-develop/validate-pr-title.workflow.ts
+        run: bun ./.github/feature-auto-merge-to-develop/validate-pr-title.workflow.ts
