@@ -44,11 +44,12 @@ const {data: closedPullRequestsByHeadBranch} = await octokit.rest.pulls.list({
   ...REQUEST_DATA,
   state: 'closed',
   head: `${REQUEST_DATA.owner}:${BASE_BRANCH}`,
-  base: `develop`,
+  base: "develop",
   sort: 'updated',
-  direction: 'desc',
   per_page: 10,
 });
+
+console.log('closedPullRequestsByHeadBranch', closedPullRequestsByHeadBranch);
 
 if (closedPullRequestsByHeadBranch.length === 0) {
   core.notice(`No pull requests found for ${HEAD_BRANCH}. Skipping...`);
@@ -56,7 +57,7 @@ if (closedPullRequestsByHeadBranch.length === 0) {
 }
 
 const mergedPullRequestsByHeadBranch = closedPullRequestsByHeadBranch.filter(
-  (pr) => !!pr.merged_at && pr.number !== parseFloat(MERGED_PR_NUMBER)
+  (pr) => !!pr.merged_at && pr.number !== triggerPullRequest.number
 );
 
 if (mergedPullRequestsByHeadBranch.length === 0) {
