@@ -17,3 +17,5 @@ jobs:
 
       - name: Validate PR title
         run: bun ./.github/feature-auto-merge-to-develop/validate-pr-title.workflow.ts
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
