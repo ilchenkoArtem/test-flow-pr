@@ -2,7 +2,7 @@ name: Validate PR Title
 
 on:
   pull_request:
-    types: [opened, edited, reopened]
+    types: [opened, edited, reopened, synchronize]
 
 jobs:
   validate-pr-title:
@@ -14,4 +14,4 @@ jobs:
 
       - name: Validate PR title
         uses: oven-sh/setup-bun@v2
-        run: bun ../feature-pr-title-check/valid-pr-title.ts
+        run: bun ../feature-pr-title-check/validate-pr-title.workflow.ts
