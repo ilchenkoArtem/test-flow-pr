@@ -8,3 +8,9 @@ export const getEnv = (key: string): string => {
   }
   return value;
 }
+
+
+export const exitWithError = (message: string): void => {
+  core.setFailed(message);
+  process.exit(1);
+}

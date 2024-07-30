@@ -1,6 +1,7 @@
 import {$} from 'bun';
 import * as core from '@actions/core';
 import {addGitConfig} from './add-git-config';
+import {exitWithError} from './utils';
 
 interface RevertCommitArgs {
   commitToRevert: string;
@@ -22,18 +23,15 @@ export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken
   }
 
   if (revertErrorMessage.includes("After resolving the conflicts, mark them with")) {
-    core.setFailed(`Failed to revert commit "${commitToRevert}". Please resolve the conflicts and revert commit manually after that run the action again`);
-    process.exit(1);
+    exitWithError(`Failed to revert commit "${commitToRevert}". Please resolve the conflicts and revert commit manually after that run the action again`);
   }
 
   if (revertErrorMessage.includes("fatal: bad object")) {
-    core.setFailed(`Failed to revert commit "${commitToRevert}". Commit not found`);
-    process.exit(1);
+    exitWithError(`Failed to revert commit "${commitToRevert}". Commit not found`);
   }
 
   if (revertErrorMessage) {
-    core.setFailed(`Failed to revert commit "${commitToRevert}". Error: ${revertErrorMessage}`)
-    process.exit(1);
+    exitWithError(`Failed to revert commit "${commitToRevert}". Error: ${revertErrorMessage}`);
   }
 
   await $`git push origin ${branchForRevert}`
