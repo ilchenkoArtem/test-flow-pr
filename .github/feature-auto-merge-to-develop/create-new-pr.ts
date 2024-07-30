@@ -61,18 +61,24 @@ export const getIfExistOrCreateNewPR = async ({githubToken, title, parentPullReq
     per_page: 1,
   });
 
-  if (pullRequests.length === 0) {
+  const alreadyExistPr = pullRequests[0];
+
+  if (!alreadyExistPr) {
     core.info(`Pull request for ${parentPullRequest.headRef} to ${parentPullRequest.baseRef} does not exist. Creating new pull request`);
     return createNewPullRequestByParent({githubToken, parentPullRequest, title});
   }
 
-  const pr = pullRequests[0];
-  core.notice(`Pull request for ${parentPullRequest.headRef} to ${parentPullRequest.baseRef} already exists. PR: ${pr.html_url}` );
-
+  core.startGroup("Pull request already exists:");
+  core.info(`Title: ${alreadyExistPr.title}`);
+  core.info(`URL: ${alreadyExistPr.html_url}`);
+  core.info(`Head: ${alreadyExistPr.head.ref}`);
+  core.info(`Base: ${alreadyExistPr.base.ref}`);
+  core.endGroup();
+  core.info(`Updating the title of the existing pull request...`);
   const {data: updatedPullRequestInfo} = await octokit.rest.pulls.update({
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
-    pull_number: pr.number,
+    pull_number: alreadyExistPr.number,
     title: title,
   })
 
