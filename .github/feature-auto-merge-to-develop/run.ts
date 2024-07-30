@@ -81,8 +81,7 @@ const reverted = await revertCommit({
   branchForRevert: parentPullRequestMergeBaseBranch,
   commitToRevert: parentPullRequestMergeCommit,
   gitHubToken: TOKEN,
-  repoFullName: `${github.context.repo.owner}/${github.context.repo.repo}`,
-})
+});
 
 if (reverted) {
   core.info(`Adding revert comment to the parent PR(${parentPullRequest.html_url})...`);

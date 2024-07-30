@@ -1,18 +1,15 @@
 import {$} from 'bun';
 import * as core from '@actions/core';
+import {addGitConfig} from './add-git-config';
 
 interface RevertCommitArgs {
   commitToRevert: string;
   branchForRevert: string;
   gitHubToken: string;
-  repoFullName: string;
 }
 
-export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken, repoFullName}: RevertCommitArgs):Promise<boolean> => {
-  await $`git remote set-url origin https://x-access-token:${gitHubToken}@github.com/${repoFullName}.git`
-  await $`git config --global user.email "github-actions[bot]@users.noreply.github.com"`
-  await $`git config --global user.name "github-actions[bot]"`
-
+export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken}: RevertCommitArgs):Promise<boolean> => {
+  await addGitConfig({gitHubToken});
   await $`git checkout ${branchForRevert}`
 
   const {stderr, stdout} = await $`git revert ${commitToRevert} --no-edit`.quiet().nothrow();
