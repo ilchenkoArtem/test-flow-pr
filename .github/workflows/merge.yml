@@ -8,6 +8,7 @@ on:
 jobs:
   revert-and-merge-feature:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref != 'develop' && github.event.pull_request.base.ref != 'main'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -17,14 +18,7 @@ jobs:
       - name: Install Bun
         uses: oven-sh/setup-bun@v2
 
-      - name: Get trigger PR info
-        id: getTriggerPRInfo
-        run: echo "triggerPr=${{ github.event.pull_request }}" >> $GITHUB_OUTPUT
-
-      - name: Read trigger PR info
-        run: echo "${{ steps.getTriggerPRInfo.outputs.triggerPr }}"
-
-      - name: Auto merge
+      - name: Revert and merge feature
         run: bun ./.github/feature-auto-merge-to-develop/revert-and-merge-feature.workflow.ts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
