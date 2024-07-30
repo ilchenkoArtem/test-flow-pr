@@ -14,12 +14,16 @@ const HEAD_BRANCH = getEnv("HEAD_BRANCH"); //from branch
 const BASE_BRANCH = getEnv("BASE_BRANCH"); //to branch
 const MERGED_PR_NUMBER = getEnv("PR_NUMBER");
 
+const REQUEST_DATA = {
+  owner: github.context.repo.owner,
+  repo: github.context.repo.repo,
+}
+
 const octokit = github.getOctokit(TOKEN);
 
 core.info(`Getting merged pull request info...`);
 const {data: triggerPullRequest} = await octokit.rest.pulls.get({
-  owner: github.context.repo.owner,
-  repo: github.context.repo.repo,
+  ...REQUEST_DATA,
   pull_number: parseFloat(MERGED_PR_NUMBER),
 });
 
@@ -37,11 +41,10 @@ core.endGroup();
 core.startGroup(`Last merged pull request info:`);
 core.info(`Fetching pull requests merged into develop from ${BASE_BRANCH}...`);
 const {data: closedPullRequestsByHeadBranch} = await octokit.rest.pulls.list({
-  owner: github.context.repo.owner,
-  repo: github.context.repo.repo,
+  ...REQUEST_DATA,
   state: 'closed',
-  head: BASE_BRANCH,
-  base: 'develop',
+  head: `${REQUEST_DATA.owner}:${BASE_BRANCH}`,
+  base: `develop`,
   sort: 'updated',
   direction: 'desc',
   per_page: 10,
@@ -88,8 +91,7 @@ if (reverted) {
   await octokit.rest.issues.createComment({
     body: `This PR has been reverted after merge of [${triggerPullRequest.title}](${triggerPullRequest.html_url})`,
     issue_number: parentPullRequest.number,
-    owner: github.context.repo.owner,
-    repo: github.context.repo.repo,
+    ...REQUEST_DATA
   });
 }
 
@@ -122,8 +124,7 @@ if (mergeTitleInfo.merged === true) {
   }
 
   await octokit.rest.pulls.merge({
-    owner: github.context.repo.owner,
-    repo: github.context.repo.repo,
+    ...REQUEST_DATA,
     pull_number: createdPullRequest.number,
     commit_title: mergeTitleInfo.title,
     merge_method: 'squash',

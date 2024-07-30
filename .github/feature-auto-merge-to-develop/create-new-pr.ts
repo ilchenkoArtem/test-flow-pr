@@ -1,6 +1,12 @@
 import * as github from '@actions/github';
 import * as core from '@actions/core';
 
+const REQUEST_DATA = {
+  owner: github.context.repo.owner,
+  repo: github.context.repo.repo,
+}
+
+
 interface CreateNewPrArgs {
   githubToken: string;
   title: string;
@@ -18,8 +24,7 @@ const createNewPullRequestByParent = async ({githubToken, parentPullRequest, tit
 
   try {
     const {data: createdPullRequest} = await octokit.rest.pulls.create({
-      owner: github.context.repo.owner,
-      repo: github.context.repo.repo,
+      ...REQUEST_DATA,
       head: parentPullRequest.headRef,
       base: parentPullRequest.baseRef,
       title: title,
@@ -34,8 +39,7 @@ const createNewPullRequestByParent = async ({githubToken, parentPullRequest, tit
     await octokit.rest.issues.createComment({
       body: `Created an updated pull request [${createdPullRequest.title}](${parentPullRequest.headRef}})`,
       issue_number: parentPullRequest.number,
-      owner: github.context.repo.owner,
-      repo: github.context.repo.repo,
+      ...REQUEST_DATA
     });
     core.info("Successfully added")
     core.endGroup();
@@ -53,9 +57,8 @@ export const getIfExistOrCreateNewPR = async ({githubToken, title, parentPullReq
   const octokit = github.getOctokit(githubToken);
 
   const {data: pullRequests} = await octokit.rest.pulls.list({
-    owner: github.context.repo.owner,
-    repo: github.context.repo.repo,
-    head: parentPullRequest.headRef,
+    ...REQUEST_DATA,
+    head: `${REQUEST_DATA.owner}:${parentPullRequest.headRef}`,
     base: parentPullRequest.baseRef,
     state: 'open',
     per_page: 1,
@@ -76,8 +79,7 @@ export const getIfExistOrCreateNewPR = async ({githubToken, title, parentPullReq
   core.endGroup();
   core.info(`Updating the title of the existing pull request...`);
   const {data: updatedPullRequestInfo} = await octokit.rest.pulls.update({
-    owner: github.context.repo.owner,
-    repo: github.context.repo.repo,
+    ...REQUEST_DATA,
     pull_number: alreadyExistPr.number,
     title: title,
   })
