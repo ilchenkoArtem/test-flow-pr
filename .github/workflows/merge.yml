@@ -1,4 +1,4 @@
-name: Revert and merge
+name: Revert and merge feature
 
 on:
   workflow_dispatch:
@@ -6,17 +6,22 @@ on:
     types: [closed]
 
 jobs:
-  auto-merge-to-develop:
+  revert-and-merge-feature:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref != 'develop' && github.event.pull_request.base.ref != 'main'
     steps:
-        - uses: actions/checkout@v4
-          with:
-            fetch-depth: 0
-        - uses: oven-sh/setup-bun@v2
-        - run: bun ./.github/feature-auto-merge-to-develop/run.ts
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
-            HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
-            PR_NUMBER: ${{ github.event.pull_request.number }}
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Auto merge
+        run: bun ./.github/feature-auto-merge-to-develop/revert-and-merge-feature.workflow.ts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
+          HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
