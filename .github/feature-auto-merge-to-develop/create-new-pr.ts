@@ -50,9 +50,9 @@ const createNewPullRequestByParent = async ({githubToken, parentPullRequest, tit
 
 
 export const getIfExistOrCreateNewPR = async ({githubToken, title, parentPullRequest}: CreateNewPrArgs) => {
-  const TOKEN = github.getOctokit(githubToken);
+  const octokit = github.getOctokit(githubToken);
 
-  const {data: pullRequests} = await TOKEN.rest.pulls.list({
+  const {data: pullRequests} = await octokit.rest.pulls.list({
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
     head: parentPullRequest.headRef,
@@ -62,10 +62,19 @@ export const getIfExistOrCreateNewPR = async ({githubToken, title, parentPullReq
   });
 
   if (pullRequests.length === 0) {
+    core.info(`Pull request for ${parentPullRequest.headRef} to ${parentPullRequest.baseRef} does not exist. Creating new pull request`);
     return createNewPullRequestByParent({githubToken, parentPullRequest, title});
   }
 
   const pr = pullRequests[0];
   core.notice(`Pull request for ${parentPullRequest.headRef} to ${parentPullRequest.baseRef} already exists. PR: ${pr.html_url}` );
-  return pr;
+
+  const {data: updatedPullRequestInfo} = await octokit.rest.pulls.update({
+    owner: github.context.repo.owner,
+    repo: github.context.repo.repo,
+    pull_number: pr.number,
+    title: title,
+  })
+
+  return updatedPullRequestInfo;
 };
