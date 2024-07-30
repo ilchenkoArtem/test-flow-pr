@@ -3,7 +3,7 @@ import * as github from '@actions/github';
 import * as process from 'node:process';
 import {revertCommit} from './revert-commit';
 import {mergeTitle} from './pull-request-title-utils';
-import {createNewPullRequestByParent} from './create-new-pr';
+import {getIfExistOrCreateNewPR} from './create-new-pr';
 import {isMergeable} from './is-mergeable-pr';
 import {getEnv} from './utils';
 import {exitWithError} from './utils';
@@ -100,7 +100,7 @@ core.info(`Merge title info: ${JSON.stringify(mergeTitleInfo)}`);
 
 core.startGroup(`Merge to ${parentPullRequest.base.ref}`);
 core.info(`Creating new pull request based on the parent pull request "${parentPullRequestMergeBaseBranch}"...`);
-const createdPullRequest = await createNewPullRequestByParent({
+const createdPullRequest = await getIfExistOrCreateNewPR({
   githubToken: TOKEN,
   parentPullRequest: {
     headRef: parentPullRequest.head.ref,
