@@ -12,6 +12,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Validate PR title
+      - name: Install Bun
         uses: oven-sh/setup-bun@v2
+
+      - name: Validate PR title
         run: bun ../feature-pr-title-check/validate-pr-title.workflow.ts
