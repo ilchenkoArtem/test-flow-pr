@@ -3,11 +3,12 @@ name: Revert and merge feature
 on:
   workflow_dispatch:
   pull_request:
-    types: [closed, opened, edited, reopened, synchronize]
+    types: [closed]
 
 jobs:
   revert-and-merge-feature:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref != 'develop' && github.event.pull_request.base.ref != 'main'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -17,7 +18,7 @@ jobs:
       - name: Install Bun
         uses: oven-sh/setup-bun@v2
 
-      - name: Revert and merge feature
+      - name: Auto merge
         run: bun ./.github/feature-auto-merge-to-develop/revert-and-merge-feature.workflow.ts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
