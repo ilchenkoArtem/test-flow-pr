@@ -45,7 +45,7 @@ const {data: closedPullRequestsByHeadBranch} = await octokit.rest.pulls.list({
   state: 'closed',
   head: `${REQUEST_DATA.owner}:${BASE_BRANCH}`,
   base: "develop",
-  sort: 'updated',
+  sort: 'created',
   per_page: 10,
 });
 
