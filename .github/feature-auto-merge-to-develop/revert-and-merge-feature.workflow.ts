@@ -118,7 +118,7 @@ if (mergeTitleInfo.merged === true) {
   const mergeable = await isMergeable({prNumber: createdPullRequest.number, githubToken: TOKEN});
 
   if (!mergeable) {
-    exitWithError(`Pull request is not mergeable`);
+    exitWithError(`Pull request is not mergeable. Pls check the PR(${createdPullRequest.html_url}) and merge manually`);
   }
 
   await octokit.rest.pulls.merge({
