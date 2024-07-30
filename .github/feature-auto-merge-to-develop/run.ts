@@ -5,12 +5,13 @@ import {revertCommit} from './revert-commit';
 import {mergeTitle} from './pull-request-title-utils';
 import {createNewPullRequestByParent} from './create-new-pr';
 import {isMergeable} from './is-mergeable-pr';
+import {getEnv} from './utils';
 
 
-const TOKEN = process.env.GITHUB_TOKEN;
-const HEAD_BRANCH = process.env.HEAD_BRANCH; //from branch
-const BASE_BRANCH = process.env.BASE_BRANCH; //to branch
-const MERGED_PR_NUMBER = process.env.PR_NUMBER;
+const TOKEN = getEnv(process.env.GITHUB_TOKEN);
+const HEAD_BRANCH = getEnv(process.env.HEAD_BRANCH); //from branch
+const BASE_BRANCH = getEnv(process.env.BASE_BRANCH); //to branch
+const MERGED_PR_NUMBER = getEnv(process.env.PR_NUMBER);
 
 const octokit = github.getOctokit(TOKEN);
 
