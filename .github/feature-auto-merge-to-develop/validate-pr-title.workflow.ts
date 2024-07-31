@@ -5,9 +5,6 @@ import {createPrTitle, isValidPullRequestTitle} from './pull-request-title-utils
 const PR_TITLE = getEnv("PR_TITLE");
 const isValid = isValidPullRequestTitle(PR_TITLE);
 
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-await wait(30000);
-
 if (isValid) {
   core.notice(`Pull request title "${PR_TITLE}" is valid.`);
 } else {
