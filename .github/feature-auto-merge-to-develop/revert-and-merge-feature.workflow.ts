@@ -102,6 +102,7 @@ core.info(`Merge title info: ${JSON.stringify(mergeTitleInfo)}`);
 
 core.startGroup(`Merge to ${parentPullRequest.base.ref}`);
 core.info(`Creating new pull request based on the parent pull request "${parentPullRequestMergeBaseBranch}"...`);
+
 const createdPullRequest = await getIfExistOrCreateNewPR({
   githubToken: TOKEN,
   parentPullRequest: {
@@ -126,7 +127,7 @@ if (mergeTitleInfo.merged === true) {
   await octokit.rest.pulls.merge({
     ...REQUEST_DATA,
     pull_number: createdPullRequest.number,
-    commit_title: mergeTitleInfo.title,
+    commit_title: mergeTitleInfo.title + ` (#${triggerPullRequest.number})`,
     merge_method: 'squash',
   });
 
