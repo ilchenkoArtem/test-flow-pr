@@ -1,6 +1,12 @@
 name: Teams notification
 description: Notify teams channel about the merge
 
+inputs:
+  webhook-url:
+    description: 'Teams webhook URL'
+    required: true
+
+
 runs:
   using: 'composite'
   steps:
