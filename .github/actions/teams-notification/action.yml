@@ -14,7 +14,7 @@ runs:
       uses: oven-sh/setup-bun@v2
 
     - name: Notify teams channel
-      run: bun index.ts
+      run: bun ./.github/actions/teams-notification/index.ts
       env:
         WEBHOOK_URL: ${{ inputs.webhook-url }}
       shell: bash
