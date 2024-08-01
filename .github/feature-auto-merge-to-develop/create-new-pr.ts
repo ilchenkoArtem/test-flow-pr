@@ -61,7 +61,7 @@ export const getIfExistOrCreateNewPR = async ({githubToken, title, parentPullReq
     head: `${REQUEST_DATA.owner}:${parentPullRequest.headRef}`,
     base: parentPullRequest.baseRef,
     state: 'open',
-    sort: 'created',
+    sort: 'long-running',
     per_page: 1,
   });
 
@@ -71,6 +71,8 @@ export const getIfExistOrCreateNewPR = async ({githubToken, title, parentPullReq
     core.info(`Pull request for ${parentPullRequest.headRef} to ${parentPullRequest.baseRef} does not exist. Creating new pull request`);
     return createNewPullRequestByParent({githubToken, parentPullRequest, title});
   }
+
+  core.warning(`Pull request already exists for ${parentPullRequest.headRef} to ${parentPullRequest.baseRef}`);
 
   core.startGroup("Pull request already exists:");
   core.info(`Title: ${alreadyExistPr.title}`);
