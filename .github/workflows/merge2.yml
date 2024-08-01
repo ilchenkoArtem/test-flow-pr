@@ -5,6 +5,9 @@ on:
   pull_request:
     types: [closed, opened, synchronize, edited]
 
+defaults:
+  run:
+    working-directory: ./.github/workflows/revert-and-merge-feature-branch
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -15,9 +18,6 @@ env:
 jobs:
   revert-and-merge-feature:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./.github/workflows/revert-and-merge-feature-branch
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
