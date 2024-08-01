@@ -1,6 +1,6 @@
 import * as github from '@actions/github';
 import * as core from '@actions/core';
-import {exitWithError, getEnv, getOctokit, OUTPUT_NAME} from './utils';
+import {exitWithError, getEnv, getOctokit} from './utils';
 
 const PR_NUMBER_WHICH_TRIGGERED_ACTION = getEnv("PR_NUMBER");
 
@@ -26,6 +26,6 @@ core.endGroup();
 
 const output = triggerPullRequest;
 core.debug(`Output: ${output}`);
-core.exportVariable(OUTPUT_NAME.EVENT_PULL_REQUEST_INFO, JSON.stringify(output));
+core.setOutput("result", JSON.stringify(output));
 
 

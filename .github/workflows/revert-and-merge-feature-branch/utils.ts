@@ -18,7 +18,3 @@ export const exitWithError = (message: string): void => {
 export const getOctokit = (): any => {
   return github.getOctokit(getEnv("GITHUB_TOKEN"));
 }
-
-export const enum OUTPUT_NAME {
-  EVENT_PULL_REQUEST_INFO = "EVENT_PULL_REQUEST_INFO"
-}
