@@ -28,4 +28,4 @@ jobs:
         uses: oven-sh/setup-bun@v2
 
       - name: Get info about the PR
-        run: bun ./get-event-pr-info.step.ts
+        run: bun ./get-event-pull-request-info.step.ts
