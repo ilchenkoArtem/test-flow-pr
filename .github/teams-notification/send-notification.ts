@@ -44,7 +44,6 @@ adaptiveCard.version = new Version(1, 4);
 const title = new TextBlock();
 title.text = "[ERROR] in the workflow";
 title.style = "default";
-title.color =  6;
 title.weight = 2;
 title.size = 2;
 title.wrap = true;

@@ -5,6 +5,10 @@ inputs:
   webhook-url:
     description: 'Teams webhook URL'
     required: true
+  statusType:
+    description: 'Status type'
+    required: false
+    default: 'info'
 
 
 runs:
