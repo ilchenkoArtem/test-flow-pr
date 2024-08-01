@@ -22,9 +22,10 @@ core.startGroup(`PR Info:`);
 core.info(`Title: ${triggerPullRequest.title}`);
 core.info(`URL: ${triggerPullRequest.html_url}`);
 core.info(`Merged at: ${new Date(triggerPullRequest.merged_at).toLocaleDateString()}`);
-core.debug(`Full PR info: ${JSON.stringify(triggerPullRequest, null, 2)}`);
 core.endGroup();
 
-core.exportVariable(OUTPUT_NAME.EVENT_PULL_REQUEST_INFO, JSON.stringify(triggerPullRequest));
+const output = triggerPullRequest;
+core.debug(`Output: ${output}`);
+core.exportVariable(OUTPUT_NAME.EVENT_PULL_REQUEST_INFO, JSON.stringify(output));
 
 
