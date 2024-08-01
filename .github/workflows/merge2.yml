@@ -31,4 +31,4 @@ jobs:
         run: bun ./get-event-pull-request-info.step.ts
 
       - name: Find the last merged PR to the base branch
-        run: bun ./get-event-pull-request-info.step.ts
+        run: bun ./get-last-merged-pr-to-base-branch.ts
