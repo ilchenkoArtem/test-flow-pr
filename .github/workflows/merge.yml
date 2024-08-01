@@ -18,6 +18,11 @@ jobs:
       - name: Install Bun
         uses: oven-sh/setup-bun@v2
 
+      - name: Get info about the PR
+        run: bun ./.github/feature-auto-merge-to-develop/get-pr-info.workflow.ts
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+
       - name: Auto merge
         run: bun ./.github/feature-auto-merge-to-develop/revert-and-merge-feature.workflow.ts
         env:
