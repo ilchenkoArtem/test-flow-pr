@@ -32,6 +32,13 @@ jobs:
         run: bun ./get-event-pull-request-info.step.ts
 
       - name: Find the last merged PR to the base branch
+        id: last-merged-info
         run: bun ./get-last-merged-pr-to-base-branch.ts
         env:
           PR_WHICH_TRIGGERED_ACTION: ${{ steps.pr-info.outputs.result }}
+
+      - name: Revert the last merged PR from develop
+        if: ${{ steps.last-merged-info.outputs.result != null }}
+        run: bun ./revert-last-merged-pr.step.ts
+        env:
+          LAST_MERGED_PR: ${{ steps.last-merged-info.outputs.result }}

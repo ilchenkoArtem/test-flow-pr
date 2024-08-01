@@ -1,5 +1,55 @@
-import {getEnv} from './utils';
+import {getEnv, getOctokit} from './utils';
+import * as core from '@actions/core';
+import * as github from '@actions/github';
+import type {
+  RestEndpointMethodTypes
+} from '@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types';
+import {exitWithError} from './utils';
 
-const PR_WHICH_TRIGGERED_ACTION = getEnv("PR_WHICH_TRIGGERED_ACTION");
+const prWhichTriggeredAction = getEnv<RestEndpointMethodTypes["pulls"]["get"]["response"]['data']>("PR_WHICH_TRIGGERED_ACTION");
 
-console.log('PR_WHICH_TRIGGERED_ACTION', PR_WHICH_TRIGGERED_ACTION);
+const octokit = getOctokit();
+
+const baseBranch = prWhichTriggeredAction.base.ref;
+
+core.info(`Getting...`);
+
+const {data: closedPullRequests} = await octokit.rest.pulls.list({
+  owner: github.context.repo.owner,
+  repo: github.context.repo.repo,
+  state: 'closed',
+  head: `${github.context.repo.owner}:${baseBranch}`,
+  base: "develop",
+  sort: "created",
+  direction: "desc",
+  per_page: 10,
+});
+
+if (closedPullRequests.length === 0) {
+  core.notice(`No pull requests found for ${baseBranch}. Skipping...`);
+  process.exit()
+}
+
+const mergedPullRequests = closedPullRequests.filter(
+  (pr) => !!pr.merged_at && pr.number !== prWhichTriggeredAction.number
+);
+
+const lastMergedPrToDevelop = mergedPullRequests[0];
+
+if (!lastMergedPrToDevelop) {
+  core.notice(`No merged pull requests found for ${baseBranch}. Skipping...`);
+  process.exit()
+}
+
+core.info(`Title: ${lastMergedPrToDevelop.title}`);
+core.info(`URL: ${lastMergedPrToDevelop.html_url}`);
+core.info(`Merged at: ${new Date(lastMergedPrToDevelop.merged_at).toLocaleDateString()}`);
+core.info(`Merge commit SHA: ${lastMergedPrToDevelop.merge_commit_sha}`);
+
+if (!lastMergedPrToDevelop.merge_commit_sha) {
+  exitWithError(`Merge commit SHA is not found for the last merged pull request`);
+}
+
+const output = JSON.stringify(lastMergedPrToDevelop);
+core.debug(`Output: ${output}`);
+core.setOutput("result", JSON.stringify(output));

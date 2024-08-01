@@ -25,6 +25,7 @@ core.info(`Merged at: ${new Date(triggerPullRequest.merged_at).toLocaleDateStrin
 core.endGroup();
 
 const output = triggerPullRequest;
+
 core.debug(`Output: ${output}`);
 core.setOutput("result", JSON.stringify(output));
 
