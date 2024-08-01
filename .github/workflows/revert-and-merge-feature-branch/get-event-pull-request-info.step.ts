@@ -25,6 +25,6 @@ core.info(`Merged at: ${new Date(triggerPullRequest.merged_at).toLocaleDateStrin
 core.debug(`Full PR info: ${JSON.stringify(triggerPullRequest, null, 2)}`);
 core.endGroup();
 
-core.saveState(OUTPUT_NAME.EVENT_PULL_REQUEST_INFO, JSON.stringify(triggerPullRequest));
+core.setOutput(OUTPUT_NAME.EVENT_PULL_REQUEST_INFO, JSON.stringify(triggerPullRequest));
 
 
