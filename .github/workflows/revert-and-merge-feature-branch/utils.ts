@@ -21,5 +21,5 @@ export const getOctokit = (): any => {
 
 
 export const enum OUTPUT_NAME {
-  EVENT_PULL_REQUEST_INFO = "event-pull-request-info"
+  EVENT_PULL_REQUEST_INFO = "EVENT_PULL_REQUEST_INFO"
 }
