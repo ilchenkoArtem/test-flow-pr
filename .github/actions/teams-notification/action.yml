@@ -14,5 +14,5 @@ runs:
       uses: oven-sh/setup-bun@v2
 
     - name: Notify teams channel
-      run: bun ./index.ts
+      run: bun ./github/actions/teams-notification/index.ts
       shell: bash
