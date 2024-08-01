@@ -1,21 +1,21 @@
 import * as github from '@actions/github';
 import * as core from '@actions/core';
-import {exitWithError, getEnv, getOctokit} from './utils';
+import {exitWithError, getEnv, getOctokit, OUTPUT_NAME} from './utils';
 
-const MERGED_PR_NUMBER = getEnv("PR_NUMBER");
+const PR_NUMBER_WHICH_TRIGGERED_ACTION = getEnv("PR_NUMBER");
 
 const octokit = getOctokit();
 
-core.info(`Getting merged pull request info...`);
+core.info(`Getting PR info...`);
 
 const {data: triggerPullRequest} = await octokit.rest.pulls.get({
   owner: github.context.repo.owner,
   repo: github.context.repo.repo,
-  pull_number: parseFloat(MERGED_PR_NUMBER),
+  pull_number: parseFloat(PR_NUMBER_WHICH_TRIGGERED_ACTION),
 });
 
 if (!triggerPullRequest) {
-  exitWithError(`Pull request #${MERGED_PR_NUMBER} is not found`);
+  exitWithError(`PR #${PR_NUMBER_WHICH_TRIGGERED_ACTION} is not found`);
 }
 
 core.startGroup(`PR Info:`);
@@ -24,5 +24,7 @@ core.info(`URL: ${triggerPullRequest.html_url}`);
 core.info(`Merged at: ${new Date(triggerPullRequest.merged_at).toLocaleDateString()}`);
 core.debug(`Full PR info: ${JSON.stringify(triggerPullRequest, null, 2)}`);
 core.endGroup();
+
+core.setOutput(OUTPUT_NAME.EVENT_PULL_REQUEST_INFO, JSON.stringify(triggerPullRequest));
 
 
