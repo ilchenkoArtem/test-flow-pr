@@ -19,6 +19,8 @@ const REQUEST_DATA = {
   repo: github.context.repo.repo,
 }
 
+console.log('REQUEST_DATA', REQUEST_DATA);
+
 const octokit = github.getOctokit(TOKEN);
 
 core.info(`Getting merged pull request info...`);
