@@ -1,0 +1,12 @@
+name: Teams notification
+description: Notify teams channel about the merge
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Bun
+      uses: oven-sh/setup-bun@latest
+
+    - name: Notify teams channel
+      run: bun ./index.ts
+      shell: bash

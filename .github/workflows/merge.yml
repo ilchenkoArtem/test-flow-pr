@@ -25,3 +25,7 @@ jobs:
           BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
           HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+
+      - name: Notify failure
+        if: failure()
+        run: echo "Failed to auto merge feature branch to develop"
