@@ -16,9 +16,7 @@ export class TeamsNotification {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        text: body,
-      }),
+      body: JSON.stringify(body),
     };
 
     try {
@@ -36,45 +34,60 @@ export class TeamsNotification {
 }
 
 const teamsNotification = new TeamsNotification(
-  'https://prod2-30.germanywestcentral.logic.azure.com:443/workflows/6e6371735cb449ca98deae3df1730ee7/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=o_bUsM_SQyVRaSp1Ddr3HmQzI1uH4AkvhdeCiixL_uo'
+  "https://prod2-05.germanywestcentral.logic.azure.com:443/workflows/0d96055dde764b19af0e7368a6d756f7/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=qZklgLiaC5XbFgHsT7ZqC-bsydY-4MPM7BxN9bBdqdY"
 )
+
+import { AdaptiveCard, TextBlock, ColumnSet, Column, Image, Version } from 'adaptivecards';
+
+const adaptiveCard = new AdaptiveCard();
+adaptiveCard.version = new Version(1, 4);
+const title = new TextBlock();
+title.text = "[ERROR] in the workflow";
+title.style = "default";
+title.color =  6;
+title.weight = 2;
+title.size = 2;
+title.wrap = true;
+
+// Author section
+const authorSection = new ColumnSet();
+authorSection.separator = true;
+
+const logoColumn = new Column();
+logoColumn.width = "auto";
+
+/*const githubLogo = new Image();
+githubLogo.url = "https://avatars.githubusercontent.com/in/15368?s=80&v=4";
+githubLogo.size = 2;
+
+logoColumn.addItem(githubLogo);
+
+const authorColumn = new Column();
+const authorText = new TextBlock();
+authorText.text = "Add notification initiator here";
+authorText.wrap = true;
+authorText.size = 1;
+authorText.weight = 2;*/
+
+
+//authorColumn.addItem(authorText);
+
+authorSection.addColumn(logoColumn);
+//authorSection.addColumn(authorColumn);
+// End of author section
+
+adaptiveCard.addItem(title);
+adaptiveCard.addItem(authorSection);
+
+const test = adaptiveCard.toJSON();
 
 teamsNotification.send({
   "type": "message",
   "attachments": [
     {
       "contentType": "application/vnd.microsoft.card.adaptive",
-      "content": {
-        "type": "AdaptiveCard",
-        "body": [
-          {
-            "type": "TextBlock",
-            "text": "Hi <at>{USER-A-NAME}</at> <at>{USER-B-NAME}</at> Woo, workflows!"
-          }
-        ],
-        "$schema": "https://adaptivecards.io/schemas/adaptive-card.json",
-        "version": "1.0",
-        "msteams": {
-          "entities": [
-            {
-              "type": "mention",
-              "text": "<at>{USER-A-NAME}</at>",
-              "mentioned": {
-                "id": "{TEAMS-A-USER-KEY}",
-                "name": "{USER-A-NAME}"
-              }
-            },
-            {
-              "type": "mention",
-              "text": "<at>{USER-B-NAME}</at>",
-              "mentioned": {
-                "id": "{TEAMS-B-USER-KEY}",
-                "name": "{USER-B-NAME}"
-              }
-            }
-          ]
-        }
-      }
+      "content": test,
     }
   ]
 })
+
