@@ -9,6 +9,9 @@ jobs:
   test-notification:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@latest
+
       - name: Send notification
         uses: ../actions/teams-notification
         with:
