@@ -51,8 +51,6 @@ const {data: closedPullRequestsByHeadBranch} = await octokit.rest.pulls.list({
   per_page: 10,
 });
 
-console.log('closedPullRequestsByHeadBranch', closedPullRequestsByHeadBranch);
-
 if (closedPullRequestsByHeadBranch.length === 0) {
   core.notice(`No pull requests found for ${HEAD_BRANCH}. Skipping...`);
   process.exit()
@@ -82,6 +80,7 @@ if (!parentPullRequestMergeCommit) {
   exitWithError(`Merge commit SHA is not found for the last merged pull request`);
 }
 
+/*
 core.startGroup(`Revert commit "${parentPullRequestMergeCommit}" from "${parentPullRequest.base.ref}"`);
 const reverted = await revertCommit({
   branchForRevert: parentPullRequestMergeBaseBranch,
@@ -140,3 +139,4 @@ if (mergeTitleInfo.merged === true) {
 }
 core.endGroup();
 
+*/
