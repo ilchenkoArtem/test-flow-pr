@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./revert-and-merge-feature-branch
+        working-directory: ./.github/workflow/revert-and-merge-feature-branch
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
