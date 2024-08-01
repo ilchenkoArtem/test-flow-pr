@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@latest
 
       - name: Send notification
-        uses: ../actions/teams-notification
+        uses: ./github/actions/teams-notification
         with:
           webhook-url: "https://prod2-30.germanywestcentral.logic.azure.com:443/workflows/6e6371735cb449ca98deae3df1730ee7/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=o_bUsM_SQyVRaSp1Ddr3HmQzI1uH4AkvhdeCiixL_uo"
 
