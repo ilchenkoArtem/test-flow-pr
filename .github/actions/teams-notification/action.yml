@@ -11,7 +11,7 @@ runs:
   using: 'composite'
   steps:
     - name: Install Bun
-      uses: oven-sh/setup-bun@latest
+      uses: oven-sh/setup-bun@v2
 
     - name: Notify teams channel
       run: bun ./index.ts
