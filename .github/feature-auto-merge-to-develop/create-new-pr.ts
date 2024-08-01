@@ -61,7 +61,8 @@ export const getIfExistOrCreateNewPR = async ({githubToken, title, parentPullReq
     head: `${REQUEST_DATA.owner}:${parentPullRequest.headRef}`,
     base: parentPullRequest.baseRef,
     state: 'open',
-    sort: 'long-running',
+    sort: "created",
+    direction: "desc",
     per_page: 1,
   });
 
