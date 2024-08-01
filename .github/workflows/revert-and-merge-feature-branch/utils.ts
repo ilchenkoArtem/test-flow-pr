@@ -7,7 +7,12 @@ export const getEnv = (key: string): string => {
     core.setFailed(`Env variable ${key} is required`);
     process.exit(1);
   }
-  return value && JSON.parse(value.trim());
+
+  if (value.startsWith("{") && value.endsWith("}")) {
+    return JSON.parse(value.trim());
+  }
+
+  return value.trim();
 }
 
 export const exitWithError = (message: string): void => {
