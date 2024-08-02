@@ -13,19 +13,6 @@ class MessageFactory {
           spacing: "medium",
         }
       ],
-      msteams: {
-        width: 'full',
-        entities: [
-          {
-            type: "mention",
-            text: `<at>Artem</at>`,
-            mentioned: {
-              id: "Artem Ilchenko",
-              name: "artem.ilchenko@711media.de",
-            }
-          }
-        ]
-      }
     }
   }
 
@@ -78,15 +65,6 @@ class MessageFactory {
       return [this.getSimpleBodyMessage(body)];
     }
     return body;
-  }
-
-  public getTeamsMentions = (name: string, id: string): AdaptiveCardBodyItem => {
-    return {
-      type: "TextBlock",
-      text: `<at>Artem</at>`,
-      wrap: true,
-      separator: true,
-    }
   }
 
   public create = ({title, type, body, actions}: CreateModel) => {
