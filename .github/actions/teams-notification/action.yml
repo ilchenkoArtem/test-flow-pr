@@ -28,7 +28,7 @@ runs:
     - name: Install Bun
       uses: oven-sh/setup-bun@v2
 
-    - name: Set environment variables
+    - name: Set not empty env vars
       shell: bash
       run: |
         set_env_var() {
