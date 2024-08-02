@@ -22,8 +22,6 @@ core.debug(`Mention list: ${mentionList}`)
 
 
 const message = createMessage({
-  mentionList: getTeamsMentionByGitUser(mentionList || []),
-  actions: actions || [],
   title,
   type: type || "INFO",
   body,
