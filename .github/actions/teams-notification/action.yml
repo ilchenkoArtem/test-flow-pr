@@ -38,7 +38,7 @@ runs:
             Body: ${{inputs.body || null}},
             Type: ${{inputs.type || null}},
             MENTION_LIST: ${{inputs.mentionList || null}},
-            Actions: ${{inputs.actions || null}}
+            Actions: ${{inputs.actions || ''}}
           };
           
           core.info(`Inputs:  ${JSON.stringify(inputs)}`);
