@@ -14,14 +14,9 @@ interface RevertCommitArgs {
 export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken}: RevertCommitArgs):Promise<boolean> => {
   await addGitConfig({gitHubToken});
 
-  const test = await $`git status`.text();
-  console.log('test', test);
-  const currentBranch = await $`git rev-parse --abbrev-ref HEAD | grep -v ^HEAD$ || git rev-parse HEAD`.text();
-  core.info(`Current branch: ${currentBranch}`)
-
-  if (!currentBranch) {
-    exitWithError("Current branch cannot be empty");
-  }
+  const tempBranchName = `temp-branch-${new Date()}`;
+  await $`git checkout -b ${tempBranchName}`;
+  core.notice(`Created a temporary branch "${tempBranchName}"`)
 
   await $`git checkout ${branchForRevert}`;
 
@@ -53,9 +48,9 @@ export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken
 
 
   core.notice(`Commit "${commitToRevert}" has been reverted on branch "${branchForRevert}"`)
-  core.info(`Back to the branch "${currentBranch}"`)
+  core.info(`Back to the branch "${tempBranchName}"`)
   //we need to return to the branch from which the action was triggered to prevent error in next steps
-  await $`git checkout ${currentBranch}`
+  await $`git checkout ${tempBranchName}`
   return true;
 }
 
