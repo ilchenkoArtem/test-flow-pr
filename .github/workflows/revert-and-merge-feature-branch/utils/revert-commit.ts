@@ -10,6 +10,9 @@ interface RevertCommitArgs {
 }
 
 export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken}: RevertCommitArgs):Promise<boolean> => {
+  const currentBranch = (await $`git branch --show-current`).text().trim();
+  core.info(`Current branch: ${currentBranch}`);
+
   await addGitConfig({gitHubToken});
   await $`git checkout ${branchForRevert}`
 
@@ -37,6 +40,9 @@ export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken
   await $`git push origin ${branchForRevert}`
 
   core.notice(`Commit "${commitToRevert}" has been reverted on branch "${branchForRevert}"`)
+  core.info(`Back to the branch "${currentBranch}"`)
+  //we need to return to the branch from which the action was triggered to prevent error in next steps
+  await $`git checkout ${currentBranch}`
   return true;
 }
 
