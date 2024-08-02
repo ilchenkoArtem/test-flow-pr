@@ -24,9 +24,6 @@ export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken
   const revertErrorMessage = stderr.toString();
   const revertResultMessage = stdout.toString();
 
-  console.log('revertErrorMessage', revertErrorMessage);
-  console.log('revertResultMessage', revertResultMessage);
-
   if (revertResultMessage.includes("Your branch is up to date")) {
     core.notice(`Commit "${commitToRevert}" has already been reverted`)
     return false;
@@ -48,7 +45,6 @@ export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken
 
 
   core.notice(`Commit "${commitToRevert}" has been reverted on branch "${branchForRevert}"`)
-  core.info(`Back to the branch "${tempBranchName}"`)
   //we need to return to the branch from which the action was triggered to prevent error in next steps
   await $`git checkout ${tempBranchName}`
   return true;
