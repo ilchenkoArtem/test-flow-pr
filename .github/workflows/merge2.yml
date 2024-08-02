@@ -38,6 +38,13 @@ jobs:
         env:
           PR_WHICH_TRIGGERED_ACTION: ${{ steps.pr-info.outputs.result }}
 
+      - name: Set revert comment to reverted PR
+        continue-on-error: true
+        run: bun ./set-revert-comment-to-reverted-pr.step.ts
+        env:
+          PR_WHICH_TRIGGERED_ACTION: ${{ steps.pr-info.outputs.result }}
+          REVERTED_PR: ${{ steps.last-merged-info.outputs.result }}
+
       - name: Revert the last merged PR from develop
         id: revert-last-merged-pr
         if: ${{ !!steps.last-merged-info.outputs.result }}
@@ -45,12 +52,7 @@ jobs:
         env:
           LAST_MERGED_PR: ${{ steps.last-merged-info.outputs.result }}
 
-      - name: Set revert comment to reverted PR
-        continue-on-error: true
-        run: bun ./.github/workflows/revert-and-merge-feature-branch/set-revert-comment-to-reverted-pr.step.ts
-        env:
-          PR_WHICH_TRIGGERED_ACTION: ${{ steps.pr-info.outputs.result }}
-          REVERTED_PR: ${{ steps.last-merged-info.outputs.result }}
+
 
       - name: Create and Merge Sync PR
         working-directory: ./.github/workflows/revert-and-merge-feature-branch
