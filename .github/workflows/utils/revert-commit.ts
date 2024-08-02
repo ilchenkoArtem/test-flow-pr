@@ -14,6 +14,9 @@ interface RevertCommitArgs {
 export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken}: RevertCommitArgs):Promise<boolean> => {
   await addGitConfig({gitHubToken});
 
+  //GitHub actions checkout the code in detached HEAD state,
+  //So we need to create a temporary branch to safely work branch with the code
+  //before doing checkout. If we do checkout without creating a branch, next steps in job will fail
   const tempBranchName = `temp-branch-${new Date().getTime()}`;
   await $`git checkout -b ${tempBranchName}`;
   core.notice(`Created a temporary branch "${tempBranchName}"`)
