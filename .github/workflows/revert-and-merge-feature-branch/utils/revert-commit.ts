@@ -1,7 +1,9 @@
 import {$} from 'bun';
 import * as core from '@actions/core';
 import {addGitConfig} from './add-git-config';
-import {exitWithError, getEnv} from './helpers';
+import {exitWithError} from './helpers';
+
+$.throws(true)
 
 interface RevertCommitArgs {
   commitToRevert: string;
@@ -10,15 +12,12 @@ interface RevertCommitArgs {
 }
 
 export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken}: RevertCommitArgs):Promise<boolean> => {
-  //await addGitConfig({gitHubToken});
+  await addGitConfig({gitHubToken});
 
-  const currentBranch = (await $`git branch --show-current`).stdout.toString();
-  core.info(`Current branch: ${currentBranch}`);
+  const currentBranch = (await $`git rev-parse --abbrev-ref HEAD`).text();
+  core.info(`Current branch: ${currentBranch}`)
 
-  await $`git fetch --all`.throws(true);
-  await $`git checkout ${branchForRevert}`.throws(true);
-
-  /*const {stderr, stdout} = await $`git revert ${commitToRevert} --no-edit`.quiet().nothrow();
+  const {stderr, stdout} = await $`git revert ${commitToRevert} --no-edit`.quiet().nothrow();
   const revertErrorMessage = stderr.toString();
   const revertResultMessage = stdout.toString();
 
@@ -39,19 +38,14 @@ export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken
     exitWithError(`Failed to revert commit "${commitToRevert}". Error: ${revertErrorMessage}`);
   }
 
-  await $`git push origin ${branchForRevert}`*/
-  await $`git fetch --all`.throws(true);
+  await $`git push origin ${branchForRevert}`
+
+
   core.notice(`Commit "${commitToRevert}" has been reverted on branch "${branchForRevert}"`)
   core.info(`Back to the branch "${currentBranch}"`)
   //we need to return to the branch from which the action was triggered to prevent error in next steps
-  await $`git checkout ${currentBranch}`.throws(true);
+  await $`git checkout ${currentBranch}`
   return true;
 }
-
-await revertCommit({
-  branchForRevert: 'develop',
-  commitToRevert: 'f58c7c3b4b7b9af7f19e591e2c29c705465f9a37-sh',
-  gitHubToken: "GITHUB_TOKEN",
-})
 
 
