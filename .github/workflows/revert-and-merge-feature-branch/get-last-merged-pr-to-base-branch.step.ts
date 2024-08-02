@@ -10,6 +10,11 @@ const octokit = getOctokit();
 
 const baseBranch = prWhichTriggeredAction.base.ref;
 
+if (baseBranch === toBranch) {
+  core.notice(`Base branch and target branch are the same and equal ${baseBranch}. Skipping...`);
+  process.exit();
+}
+
 core.info(`Getting...`);
 
 const {data: closedPullRequests} = await octokit.rest.pulls.list({
@@ -24,7 +29,7 @@ const {data: closedPullRequests} = await octokit.rest.pulls.list({
 });
 
 if (closedPullRequests.length === 0) {
-  core.notice(`No pull requests found from ${baseBranch}} to ${toBranch}  . Skipping...`);
+  core.notice(`No pull requests found from ${baseBranch} to ${toBranch}  . Skipping...`);
   process.exit()
 }
 
