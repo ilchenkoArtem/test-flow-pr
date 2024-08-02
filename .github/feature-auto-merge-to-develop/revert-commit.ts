@@ -12,8 +12,8 @@ interface RevertCommitArgs {
 
 export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken}: RevertCommitArgs):Promise<boolean> => {
   await addGitConfig({gitHubToken});
+  await $`git fetch --all`.throws(true)
   await $`git checkout ${branchForRevert}`.throws(true)
-  await $`git pull origin ${branchForRevert}`.throws(true)
 
   const {stderr, stdout} = await $`git revert ${commitToRevert} --no-edit`.quiet().nothrow();
   const revertErrorMessage = stderr.toString();
