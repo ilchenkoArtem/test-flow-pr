@@ -29,16 +29,16 @@ runs:
       uses: oven-sh/setup-bun@v2
 
     - name: Set not empty env vars
-      uses: actions/github-script@v3
+      uses: actions/github-script@v7
       with:
         script: |
           const inputs = {
-            webhookUrl: ${{inputs.webhook-url}},
-            title: ${{inputs.title}},
-            body: ${{inputs.body}},
-            type: ${{inputs.type}},
-            mentionList: ${{inputs.mentionList}},
-            actions: ${{inputs.actions}}
+            WEBHOOK_URL: ${{inputs.webhook-url}},
+            Title: ${{inputs.title}},
+            Body: ${{inputs.body}},
+            Type: ${{inputs.type}},
+            MENTION_LIST: ${{inputs.mentionList}},
+            Actions: ${{inputs.actions}}
           };
           
           core.info(`Inputs:  ${JSON.stringify(inputs)}`);
