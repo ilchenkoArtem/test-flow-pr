@@ -96,7 +96,7 @@ const message = createMessage({
       url: "https://adaptivecards.io"
     }
   ],
-  assignedTo: [getTeamsMentionByGitUser('ilchenkoArtem')]
+  assignedTo: getTeamsMentionByGitUser(['ilchenkoArtem', 'ny1am'])
 });
 
 console.log('message', JSON.stringify(message, null, 2));

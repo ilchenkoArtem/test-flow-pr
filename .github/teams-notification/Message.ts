@@ -1,5 +1,5 @@
 class MessageFactory {
-  getCardRoot = (body: AdaptiveCardBodyItem[], actions: AdaptiveCardAction[]) => {
+  getCardRoot = ({actions, assignedTo, body}: CreateRootModel) => {
     return {
       type: "AdaptiveCard",
       $schema: "http://adaptivecards.io/schemas/adaptive-card.json",
@@ -13,19 +13,7 @@ class MessageFactory {
           spacing: "medium",
         }
       ],
-      msteams: {
-        width: 'full',
-        entities: [
-          {
-            type: "mention",
-            text: `<at>Artem</at>`,
-            mentioned: {
-              id: "artem.ilchenko@711media.de",
-              name: "Artem Ilchenko",
-            }
-          }
-        ]
-      }
+      msteams: this.getCardMsteams(assignedTo),
     }
   }
 
@@ -53,12 +41,11 @@ class MessageFactory {
     return [
       {
         type: "TextBlock",
-        spacing: "None",
+        spacing: "none",
         text: `${this.getTitlePrefixByType(type)} ${title}`,
         weight: "bolder",
         wrap: true,
         color: this.getStatusColorByType(type),
-        separator: true,
       },
     ]
   }
@@ -73,35 +60,74 @@ class MessageFactory {
     }
   }
 
-  public getCardBody = (body: string | AdaptiveCardBodyItem[]): AdaptiveCardBodyItem[] => {
+  private getCardBody = (body: string | AdaptiveCardBodyItem[]): AdaptiveCardBodyItem[] => {
     if (typeof body === "string") {
       return [this.getSimpleBodyMessage(body)];
     }
     return body;
   }
 
-  public getTeamsMentions = (name: string, id: string): AdaptiveCardBodyItem => {
+  private getAssignedTo = (mention?: AdaptiveCardTeamMention[]): AdaptiveCardBodyItem[] => {
+    if (!mention || !mention.length) {
+      return [];
+    }
+
+    return [
+      {
+        type: "TextBlock",
+        text: `@: ${mention.map(({type}) => `<at>${type}</at>`).join(", ")}`,
+        wrap: true,
+        spacing: "none",
+        size: "small",
+        color: "light"
+      }
+    ]
+  }
+
+  public getCardMsteams = (mention: AdaptiveCardTeamMention[] | undefined) => {
+    if (!mention || !mention.length) {
+      return null;
+    }
+
     return {
-      type: "TextBlock",
-      text: `<at>Artem</at>`,
-      wrap: true,
+      entities: mention.map(({name, id, type}) => ({
+        type: "mention",
+        text: `<at>${type}</at>`,
+        mentioned: {
+          id,
+          name,
+        }
+      }))
     }
   }
 
-  public create = ({title, type, body, actions}: CreateModel) => {
+  public create = ({title, type, body, actions, assignedTo}: CreateModel) => {
     const cardHeader = this.getCardHeader(title, type);
     const cardBody = this.getCardBody(body);
+    const cardAssignedTo = this.getAssignedTo(assignedTo);
 
-    return this.getCardRoot([
-      ...cardHeader,
-      ...cardBody,
-      this.getTeamsMentions("Artem", "")
-    ], actions);
+    return this.getCardRoot({
+      body: [
+        ...cardHeader,
+        ...cardAssignedTo,
+        ...cardBody,
+      ],
+      assignedTo,
+      actions
+    });
   }
 }
 
 type AdaptiveCardBodyItem = Record<string, any>
 type AdaptiveCardAction = Record<string, any>
+type AdaptiveCardTeamMention = {
+  name: string;
+  id: string;
+  /**
+   * Type of the team member need for use in text with <at>{type}</at>
+   */
+  type: string;
+}
 
 type CARD_TYPE = "ERROR" | "INFO" | "WARNING";
 
@@ -111,9 +137,15 @@ interface CreateModel {
   /**
    * Set GitHub user logins to mention them in the message
    */
-  assignedTo?: string[];
+  assignedTo?: AdaptiveCardTeamMention[];
   body: string | AdaptiveCardBodyItem[];
   actions?: AdaptiveCardAction[];
+}
+
+interface CreateRootModel {
+  body: AdaptiveCardBodyItem[];
+  actions: AdaptiveCardAction[];
+  assignedTo?: AdaptiveCardTeamMention[];
 }
 
 export const createMessage = new MessageFactory().create;

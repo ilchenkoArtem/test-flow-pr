@@ -5,11 +5,19 @@ inputs:
   webhook-url:
     description: 'Teams webhook URL'
     required: true
-  statusType:
-    description: 'Status type'
+  body:
+    description: 'Message body. Can be a string or AdaptiveCard.body(https://adaptivecards.io/explorer/AdaptiveCard.html) object ]'
+    required: true
+  type:
+    description: 'Status of message. One of "info", "warning", "error". Default is "info"'
     required: false
     default: 'info'
-
+  actions:
+    description: 'Actions to be added to the message. AdaptiveCard.actions(https://adaptivecards.io/explorer/AdaptiveCard.html) object'
+    required: false
+  notify:
+    description: 'List of users to notify. Use nickname of github user "["user1", "user2"]"'
+    required: false
 
 runs:
   using: 'composite'
@@ -21,4 +29,6 @@ runs:
       run: bun ./.github/actions/teams-notification/index.ts
       env:
         WEBHOOK_URL: ${{ inputs.webhook-url }}
+
+
       shell: bash
