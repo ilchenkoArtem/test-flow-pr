@@ -15,8 +15,7 @@ export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken
   const currentBranch = (await $`git branch --show-current`).stdout.toString();
   core.info(`Current branch: ${currentBranch}`);
 
-  const {stderr} = await $`git checkout ${branchForRevert}`;
-  console.log('stderr', stderr.toString());
+  await $`git checkout ${branchForRevert}`.throws(true);
 
   /*const {stderr, stdout} = await $`git revert ${commitToRevert} --no-edit`.quiet().nothrow();
   const revertErrorMessage = stderr.toString();
@@ -45,7 +44,7 @@ export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken
   core.info(`Back to the branch "${currentBranch}"`)
   //we need to return to the branch from which the action was triggered to prevent error in next steps
   console.log('currentBranch', currentBranch);
-  const {stderr: checkoutError, stdout:checkoutOutput} = await $`git checkout split-flow-v2-2`
+  const {stderr: checkoutError, stdout:checkoutOutput} = await $`git checkout ${currentBranch}`.throws(true);
   console.log('checkoutError', checkoutError.toString());
   console.log('checkoutOutput', checkoutOutput.toString());
   return true;
