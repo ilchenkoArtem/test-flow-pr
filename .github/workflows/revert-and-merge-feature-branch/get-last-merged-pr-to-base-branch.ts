@@ -1,12 +1,10 @@
 import {getEnv, getOctokit} from './utils';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import type {
-  RestEndpointMethodTypes
-} from '@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types';
 import {exitWithError} from './utils';
+import {PullRequest} from './types';
 
-const prWhichTriggeredAction = getEnv<RestEndpointMethodTypes["pulls"]["get"]["response"]['data']>("PR_WHICH_TRIGGERED_ACTION");
+const prWhichTriggeredAction = getEnv<PullRequest>("PR_WHICH_TRIGGERED_ACTION");
 
 const octokit = getOctokit();
 
