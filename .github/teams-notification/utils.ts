@@ -63,10 +63,8 @@ export const sendNotification = async ({message, webhook}: SendNotificationArgs)
       })
     });
 
-    const responseData = await response.json();
-
     if (!response.ok) {
-      console.log("responseData", responseData)
+      console.log("responseData", response)
       throw new Error('Failed to send notification');
     }
 
