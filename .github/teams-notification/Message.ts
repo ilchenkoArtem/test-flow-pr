@@ -12,7 +12,20 @@ class MessageFactory {
           actions,
           spacing: "medium",
         }
-      ]
+      ],
+      msteams: {
+        width: 'full',
+        entities: [
+          {
+            type: "mention",
+            text: `<at>Artem</at>`,
+            mentioned: {
+              id: "Artem Ilchenko",
+              name: "artem.ilchenko@711media.de",
+            }
+          }
+        ]
+      }
     }
   }
 
@@ -47,13 +60,6 @@ class MessageFactory {
         color: this.getStatusColorByType(type),
         separator: true,
       },
-      {
-        type: "TextBlock",
-        spacing: "None",
-        wrap: true,
-        text: "Assigned to: [artem.ilchenko@711media.de](email:artem.ilchenko@711media.de)",
-        size: 'small',
-      }
     ]
   }
 
@@ -74,24 +80,12 @@ class MessageFactory {
     return body;
   }
 
-  public getTeamsMention = (name: string, id: string): AdaptiveCardBodyItem => {
+  public getTeamsMentions = (name: string, id: string): AdaptiveCardBodyItem => {
     return {
       type: "TextBlock",
-      text: `<at>${name}</at>`,
+      text: `<at>Artem</at>`,
       wrap: true,
       separator: true,
-      msteams: {
-        entities: [
-          {
-            type: "mention",
-            text: `<at>${name}</at>`,
-            mentioned: {
-              id,
-              name,
-            }
-          }
-        ]
-      }
     }
   }
 

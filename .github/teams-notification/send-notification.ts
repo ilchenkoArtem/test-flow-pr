@@ -40,6 +40,7 @@ const teamsNotification = new TeamsNotification(
 )
 
 import {AdaptiveCard, TextBlock, ColumnSet, Column, Image, Version} from 'adaptivecards';
+import {getTeamsMentionByGitUser} from './utils';
 
 const adaptiveCard = new AdaptiveCard();
 adaptiveCard.version = new Version(1, 4);
@@ -85,7 +86,7 @@ adaptiveCard.addItem(authorSection);
 
 const test = adaptiveCard.toJSON();
 
-console.log('test', test);
+//console.log('test', test);
 
 const message = createMessage({
   type: "ERROR",
@@ -98,6 +99,7 @@ const message = createMessage({
       url: "https://adaptivecards.io"
     }
   ],
+  assignedTo: [getTeamsMentionByGitUser('ilchenkoArtem')]
 });
 
 console.log('message', JSON.stringify(message, null, 2));
