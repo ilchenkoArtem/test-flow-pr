@@ -33,12 +33,12 @@ runs:
       with:
         script: |
           const inputs = {
-            WEBHOOK_URL: ${{inputs.webhook-url || null}},
+            WEBHOOK_URL: core.getInput('webhook-url'),
             Title: ${{inputs.title || null}},
             Body: ${{inputs.body || null}},
             Type: ${{inputs.type || null}},
             MENTION_LIST: ${{inputs.mentionList || null}},
-            Actions: ${{inputs.actions || ''}}
+            Actions: core.getInput('actions') || null
           };
           
           core.info(`Inputs:  ${JSON.stringify(inputs)}`);
