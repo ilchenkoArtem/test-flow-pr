@@ -1,7 +1,9 @@
 import {$} from 'bun';
 import * as core from '@actions/core';
 import {addGitConfig} from './add-git-config';
-import {exitWithError} from './utils';
+import {exitWithError} from './helpers';
+
+$.throws(true)
 
 interface RevertCommitArgs {
   commitToRevert: string;
@@ -11,14 +13,23 @@ interface RevertCommitArgs {
 
 export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken}: RevertCommitArgs):Promise<boolean> => {
   await addGitConfig({gitHubToken});
-  await $`git checkout ${branchForRevert}`
 
-  const {stderr, stdout} = await $`git revert ${commitToRevert} --no-edit`.quiet().nothrow();
+  //GitHub actions checkout the code in detached HEAD state,
+  //So we need to create a temporary branch to safely work branch with the code
+  //before doing checkout. If we do checkout without creating a branch, next steps in job will fail
+  const tempBranchName = `temp-branch-${new Date().getTime()}`;
+  await $`git checkout -b ${tempBranchName}`;
+  core.notice(`Created a temporary branch "${tempBranchName}"`)
+
+  await $`git checkout ${branchForRevert}`;
+
+  const {stderr, stdout} = await $`git revert ${commitToRevert} --no-edit`.quiet().throws(false);
   const revertErrorMessage = stderr.toString();
   const revertResultMessage = stdout.toString();
 
   if (revertResultMessage.includes("Your branch is up to date")) {
     core.notice(`Commit "${commitToRevert}" has already been reverted`)
+    await $`git checkout ${tempBranchName}`
     return false;
   }
 
@@ -34,9 +45,12 @@ export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken
     exitWithError(`Failed to revert commit "${commitToRevert}". Error: ${revertErrorMessage}`);
   }
 
-  await $`git push origin ${branchForRevert}`
+  await $`git push origin ${branchForRevert}`.throws(true);
+
 
   core.notice(`Commit "${commitToRevert}" has been reverted on branch "${branchForRevert}"`)
+  //we need to return to the branch from which the action was triggered to prevent error in next steps
+  await $`git checkout ${tempBranchName}`
   return true;
 }
 

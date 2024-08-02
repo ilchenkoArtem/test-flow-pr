@@ -1,5 +1,6 @@
 import * as github from '@actions/github';
 import * as core from '@actions/core';
+import {getOctokit} from '../utils/helpers';
 
 const REQUEST_DATA = {
   owner: github.context.repo.owner,
@@ -8,7 +9,6 @@ const REQUEST_DATA = {
 
 
 interface CreateNewPrArgs {
-  githubToken: string;
   title: string;
   parentPullRequest: {
     headRef: string;
@@ -19,8 +19,8 @@ interface CreateNewPrArgs {
   }
 }
 
-const createNewPullRequestByParent = async ({githubToken, parentPullRequest, title}: CreateNewPrArgs) => {
-  const octokit = github.getOctokit(githubToken);
+const createNewPullRequestByParent = async ({parentPullRequest, title}: CreateNewPrArgs) => {
+  const octokit = getOctokit();
 
   try {
     const {data: createdPullRequest} = await octokit.rest.pulls.create({
@@ -52,16 +52,16 @@ const createNewPullRequestByParent = async ({githubToken, parentPullRequest, tit
 }
 
 
-
-export const getIfExistOrCreateNewPR = async ({githubToken, title, parentPullRequest}: CreateNewPrArgs) => {
-  const octokit = github.getOctokit(githubToken);
+export const getIfExistOrCreateNewPR = async ({title, parentPullRequest}: CreateNewPrArgs) => {
+  const octokit = getOctokit();
 
   const {data: pullRequests} = await octokit.rest.pulls.list({
     ...REQUEST_DATA,
     head: `${REQUEST_DATA.owner}:${parentPullRequest.headRef}`,
     base: parentPullRequest.baseRef,
     state: 'open',
-    sort: 'created',
+    sort: "created",
+    direction: "desc",
     per_page: 1,
   });
 
@@ -69,8 +69,10 @@ export const getIfExistOrCreateNewPR = async ({githubToken, title, parentPullReq
 
   if (!alreadyExistPr) {
     core.info(`Pull request for ${parentPullRequest.headRef} to ${parentPullRequest.baseRef} does not exist. Creating new pull request`);
-    return createNewPullRequestByParent({githubToken, parentPullRequest, title});
+    return createNewPullRequestByParent({parentPullRequest, title});
   }
+
+  core.warning(`Pull request already exists from ${parentPullRequest.headRef} to ${parentPullRequest.baseRef} branches`);
 
   core.startGroup("Pull request already exists:");
   core.info(`Title: ${alreadyExistPr.title}`);

@@ -5,7 +5,7 @@ import {
   getTaskNumbers, getTitleDescription,
   isPullRequestTitleWithoutTaskNumbers,
   isPullRequestTitleWithTaskNumbers, mergeTitle, successMergeResult
-} from '../pull-request-title-utils';
+} from '.github/workflows/revert-and-merge-feature-branch/utils/pull-request-title-utils';
 
 describe('pull-request-title-utils', () => {
   describe('isPullRequestTitleWithoutScope', () => {
