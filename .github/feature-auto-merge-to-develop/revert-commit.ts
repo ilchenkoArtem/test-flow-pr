@@ -9,6 +9,7 @@ interface RevertCommitArgs {
   gitHubToken: string;
 }
 
+
 export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken}: RevertCommitArgs):Promise<boolean> => {
   await addGitConfig({gitHubToken});
   await $`git checkout ${branchForRevert}`
@@ -34,10 +35,7 @@ export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken
     exitWithError(`Failed to revert commit "${commitToRevert}". Error: ${revertErrorMessage}`);
   }
 
-  const {stdout, stderr} = await $`git push origin ${branchForRevert}`
-
-  console.log('stderr', stderr.toString());
-  console.log('stdout', stdout.toString());
+  await $`git push origin ${branchForRevert}`
 
   core.notice(`Commit "${commitToRevert}" has been reverted on branch "${branchForRevert}"`)
   return true;
