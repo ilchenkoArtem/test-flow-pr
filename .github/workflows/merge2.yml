@@ -34,7 +34,7 @@ jobs:
       - name: Find the last merged PR to the base branch
         if: ${{ !!steps.pr-info.outputs.result }}
         id: last-merged-info
-        run: bun ./get-last-merged-pr-to-base-branch.ts
+        run: bun ./get-last-merged-pr-to-base-branch.step.ts
         env:
           PR_WHICH_TRIGGERED_ACTION: ${{ steps.pr-info.outputs.result }}
 
