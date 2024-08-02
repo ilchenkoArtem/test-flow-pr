@@ -9,6 +9,7 @@ const prWhichTriggeredAction = getEnv<PullRequest>("PR_WHICH_TRIGGERED_ACTION");
 const octokit = getOctokit();
 
 const baseBranch = prWhichTriggeredAction.base.ref;
+console.log('baseBranch', baseBranch);
 
 core.info(`Getting...`);
 
@@ -24,7 +25,7 @@ const {data: closedPullRequests} = await octokit.rest.pulls.list({
 });
 
 if (closedPullRequests.length === 0) {
-  core.notice(`No pull requests found for ${baseBranch}. Skipping...`);
+  core.notice(`No pull requests found to ${baseBranch} . Skipping...`);
   process.exit()
 }
 
