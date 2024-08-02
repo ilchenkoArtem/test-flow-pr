@@ -9,7 +9,6 @@ const prWhichTriggeredAction = getEnv<PullRequest>("PR_WHICH_TRIGGERED_ACTION");
 const octokit = getOctokit();
 
 const baseBranch = prWhichTriggeredAction.base.ref;
-console.log('baseBranch', baseBranch);
 
 core.info(`Getting...`);
 
