@@ -14,8 +14,12 @@ interface RevertCommitArgs {
 export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken}: RevertCommitArgs):Promise<boolean> => {
   await addGitConfig({gitHubToken});
 
-  const currentBranch = await $`git rev-parse --abbrev-ref HEAD | grep -v ^HEAD$ || git rev-parse HEAD`;
+  const currentBranch = await $`git rev-parse --abbrev-ref HEAD | grep -v ^HEAD$ || git rev-parse HEAD`.text();
   core.info(`Current branch: ${currentBranch}`)
+
+  if (!currentBranch) {
+    exitWithError("Current branch cannot be empty");
+  }
 
   await $`git checkout ${branchForRevert}`;
 
