@@ -1,29 +1,29 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import {getIfExistOrCreateNewPR} from './utils/create-new-pr';
-import {isMergeable} from './utils/is-mergeable-pr';
-import {mergeTitle} from './utils/pull-request-title-utils';
-import {exitWithError, getOctokit, getEnvJson} from './utils/helpers';
+import {getIfExistOrCreateNewPR} from "./create-new-pr"
+import {isMergeable} from '../utils/is-mergeable-pr';
+import {mergeTitle} from '../utils/pull-request-title-utils';
+import {exitWithError, getOctokit, getEnvJson} from '../utils/helpers';
 import {PullRequest} from './types';
 
-const lastMergedPr = getEnvJson<PullRequest>("LAST_MERGED_PR");
+const revertedPr = getEnvJson<PullRequest>("REVERTED_PR");
 const prWhichTriggeredAction = getEnvJson<PullRequest>("PR_WHICH_TRIGGERED_ACTION");
 const octokit = getOctokit()
 
-core.info('Merge title of the last merged PR and the PR which triggered the action...');
-const mergeTitleInfo = mergeTitle(lastMergedPr.title, prWhichTriggeredAction.title);
+core.info('Merge title of the reverted PR and the PR which triggered the action...');
+const mergeTitleInfo = mergeTitle(revertedPr.title, prWhichTriggeredAction.title);
 core.info(`Merge title info: ${JSON.stringify(mergeTitleInfo)}`);
 
-core.info(`Merge to ${lastMergedPr.base.ref}`);
+core.info(`Merge to ${revertedPr.base.ref}`);
 
-core.info(`Creating new pull request based on the parent pull request...`);
+core.info(`Creating new pull request based on reverted pull request...`);
 const createdPullRequest = await getIfExistOrCreateNewPR({
   parentPullRequest: {
-    headRef: lastMergedPr.head.ref,
-    baseRef: lastMergedPr.base.ref,
-    title: lastMergedPr.title,
-    htmlUrl: lastMergedPr.html_url,
-    number: lastMergedPr.number
+    headRef: revertedPr.head.ref,
+    baseRef: revertedPr.base.ref,
+    title: revertedPr.title,
+    htmlUrl: revertedPr.html_url,
+    number: revertedPr.number
   },
   title: mergeTitleInfo.merged ? mergeTitleInfo.title : prWhichTriggeredAction.title,
 });
@@ -32,7 +32,7 @@ const createdPullRequest = await getIfExistOrCreateNewPR({
 if (mergeTitleInfo.merged === true) {
   core.info(`Pull request title is valid. Merging...`);
 
-  const mergeable = await isMergeable({prNumber: createdPullRequest.number, githubToken: TOKEN});
+  const mergeable = await isMergeable(createdPullRequest.number);
 
   if (!mergeable) {
     exitWithError(`Pull request is not mergeable. Pls check the PR(${createdPullRequest.html_url}) and merge manually`);

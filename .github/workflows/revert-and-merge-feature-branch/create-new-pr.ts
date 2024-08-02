@@ -1,6 +1,6 @@
 import * as github from '@actions/github';
 import * as core from '@actions/core';
-import {getOctokit} from './utils';
+import {getOctokit} from '../utils/helpers';
 
 const REQUEST_DATA = {
   owner: github.context.repo.owner,
@@ -72,7 +72,7 @@ export const getIfExistOrCreateNewPR = async ({title, parentPullRequest}: Create
     return createNewPullRequestByParent({parentPullRequest, title});
   }
 
-  core.warning(`Pull request already exists for ${parentPullRequest.headRef} to ${parentPullRequest.baseRef}`);
+  core.warning(`Pull request already exists from ${parentPullRequest.headRef} to ${parentPullRequest.baseRef} branches`);
 
   core.startGroup("Pull request already exists:");
   core.info(`Title: ${alreadyExistPr.title}`);

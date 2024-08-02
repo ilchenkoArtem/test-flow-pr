@@ -3,7 +3,7 @@ name: Revert and merge feature
 on:
   workflow_dispatch:
   pull_request:
-    types: [closed, opened, synchronize, edited]
+    types: [closed]
 
 defaults:
   run:
@@ -46,17 +46,16 @@ jobs:
           LAST_MERGED_PR: ${{ steps.last-merged-info.outputs.result }}
 
       - name: Set revert comment to reverted PR
-        if: ${{ !!steps.revert-last-merged-pr.outputs.result == 'true' }}
+        if: ${{ steps.revert-last-merged-pr.outputs.result == 'true' }}
         run: bun ./set-revert-comment-to-reverted-pr.step.ts
         env:
           PR_WHICH_TRIGGERED_ACTION: ${{ steps.pr-info.outputs.result }}
           REVERTED_PR: ${{ steps.last-merged-info.outputs.result }}
 
       - name: Create and Merge Sync PR
-        working-directory: ./.github/workflows/revert-and-merge-feature-branch
         if: ${{ !!steps.last-merged-info.outputs.result && !!steps.revert-last-merged-pr.outputs.result }}
-        run: bun ./create-and-merge-sync-pr.step.ts
+        run: bun ./create-and-merge-next-pr.step.ts
         env:
           PR_WHICH_TRIGGERED_ACTION: ${{ steps.pr-info.outputs.result }}
-          LAST_MERGED_PR: ${{ steps.last-merged-info.outputs.result }}
+          REVERTED_PR: ${{ steps.last-merged-info.outputs.result }}
 

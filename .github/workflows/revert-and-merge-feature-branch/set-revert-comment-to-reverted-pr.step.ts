@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import { getEnvJson, getOctokit} from './utils/helpers';
+import { getEnvJson, getOctokit} from '../utils/helpers';
 import {PullRequest} from './types';
 
 const revertedPullRequest = getEnvJson<PullRequest>("REVERTED_PR");
@@ -8,7 +8,7 @@ const actionTriggeredPullRequest = getEnvJson<PullRequest>("PR_WHICH_TRIGGERED_A
 
 const octokit = getOctokit();
 
-core.info(`Adding revert comment to the parent PR(${actionTriggeredPullRequest.html_url})...`);
+core.info(`Adding revert comment to the parent PR(${revertedPullRequest.html_url})...`);
 await octokit.rest.issues.createComment({
   body: `This PR has been reverted after merge of [${actionTriggeredPullRequest.title}](${actionTriggeredPullRequest.html_url})`,
   issue_number: revertedPullRequest.number,

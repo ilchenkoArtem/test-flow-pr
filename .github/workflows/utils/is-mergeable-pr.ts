@@ -1,15 +1,11 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
+import {getOctokit} from './helpers';
 
 const STATUS_CHECK_INTERVAL_MS = 7000;
 
-interface IsMergeablePrArgs {
-  prNumber: number;
-  githubToken: string;
-}
-
-export const isMergeable = ({prNumber, githubToken}: IsMergeablePrArgs) => {
-  const octokit = github.getOctokit(githubToken);
+export const isMergeable = (prNumber: number) => {
+  const octokit = getOctokit();
 
   //We need to check if the PR is mergeable with promise because GitHub API returns null
   //for mergeable field when it is computing the mergeability
