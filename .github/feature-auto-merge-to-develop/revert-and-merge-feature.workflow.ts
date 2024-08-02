@@ -40,7 +40,6 @@ core.info(`Merge title info: ${JSON.stringify(mergeTitleInfo)}`);
 core.startGroup(`Merge to ${lastMergedPr.base.ref}`);
 core.info(`Creating new pull request based on the parent pull request...`);
 const createdPullRequest = await getIfExistOrCreateNewPR({
-  githubToken: GITHUB_TOKEN,
   parentPullRequest: {
     headRef: lastMergedPr.head.ref,
     baseRef: lastMergedPr.base.ref,

@@ -47,8 +47,10 @@ jobs:
 
       - name: Set revert comment to reverted PR
         if: ${{ steps.revert-last-merged-pr.outputs.result == 'true' }}
+        continue-on-error: true
         run: bun ./set-revert-comment-to-reverted-pr.step.ts
         env:
+          PR_WHICH_TRIGGERED_ACTION: ${{ steps.pr-info.outputs.result }}
           REVERTED_PR: ${{ steps.last-merged-info.outputs.result }}
 
 
