@@ -1,7 +1,7 @@
 import {$} from 'bun';
 import * as core from '@actions/core';
 import {addGitConfig} from './add-git-config';
-import {exitWithError} from './helpers';
+import {exitWithError, getEnv} from './helpers';
 
 interface RevertCommitArgs {
   commitToRevert: string;
@@ -10,9 +10,9 @@ interface RevertCommitArgs {
 }
 
 export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken}: RevertCommitArgs):Promise<boolean> => {
-  await addGitConfig({gitHubToken});
+  //await addGitConfig({gitHubToken});
 
-  const currentBranch = (await $`git branch --show-current`).stdout;
+  const currentBranch = (await $`git branch --show-current`).stdout.toString();
   core.info(`Current branch: ${currentBranch}`);
 
   await $`git checkout ${branchForRevert}`
@@ -46,5 +46,11 @@ export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken
   await $`git checkout ${currentBranch}`
   return true;
 }
+
+await revertCommit({
+  branchForRevert: 'develop',
+  commitToRevert: 'f58c7c3b4b7b9af7f19e591e2c29c705465f9a37-sh',
+  gitHubToken: "GITHUB_TOKEN",
+})
 
 
