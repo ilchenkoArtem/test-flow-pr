@@ -45,7 +45,12 @@ jobs:
         env:
           LAST_MERGED_PR: ${{ steps.last-merged-info.outputs.result }}
 
+      - name: Show the result of the revert
+        if: ${{ !!steps.revert-last-merged-pr.outputs.result == 'true' }}
+        run: echo ${{steps.revert-last-merged-pr.outputs.result}}
+
       - name: Set revert comment to reverted PR
+        if: ${{ !!steps.revert-last-merged-pr.outputs.result == 'true' }}
         run: bun ./set-revert-comment-to-reverted-pr.step.ts
         env:
           PR_WHICH_TRIGGERED_ACTION: ${{ steps.pr-info.outputs.result }}
