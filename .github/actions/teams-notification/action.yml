@@ -28,19 +28,15 @@ runs:
     - name: Install Bun
       uses: oven-sh/setup-bun@v2
 
-    - name: Set not empty env vars
-      uses: actions/github-script@v7
-      with:
-        script: |
-          const inputs = {
-            WEBHOOK_URL: core.getInput('webhook-url'),
-            Title: ${{inputs.title || null}},
-            Body: ${{inputs.body || null}},
-            Type: ${{inputs.type || null}},
-            MENTION_LIST: ${{inputs.mentionList || null}},
-            Actions: core.getInput('actions') || null
-          };
-
     - name: Notify teams channel
       run: bun ./.github/actions/teams-notification/index.ts
+      env:
+        WEBHOOK_URL: ${{ inputs.webhook-url }}
+        BODY: ${{ inputs.body }}
+        TYPE: ${{ inputs.type }}
+        ACTIONS: ${{ inputs.actions }}
+        MENTION_LIST: ${{ inputs.mentionList }}
+        TITLE: ${{ inputs.title }}
+
+
       shell: bash
