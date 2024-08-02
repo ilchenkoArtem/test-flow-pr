@@ -2,7 +2,6 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 
 export const getEnv = (key: string) => {
-  console.trace(`Getting env variable ${key}`);
   const value = process.env[key];
   if (value === undefined) {
     exitWithError(`Environment variable "${key}" is not set`);
@@ -33,6 +32,12 @@ export const exitWithError = (message: string): void => {
   process.exit();
 }
 
+/**
+ * Get octokit instance
+ *
+ * You should set GITHUB_TOKEN in your environment variables
+ * in your workflow file before using this function
+ */
 export const getOctokit = () => {
   return github.getOctokit(getEnv("GITHUB_TOKEN"));
 }
