@@ -1,6 +1,5 @@
 import * as github from '@actions/github';
 import * as core from '@actions/core';
-import {getOctokit} from './utils';
 
 const REQUEST_DATA = {
   owner: github.context.repo.owner,
@@ -9,6 +8,7 @@ const REQUEST_DATA = {
 
 
 interface CreateNewPrArgs {
+  githubToken: string;
   title: string;
   parentPullRequest: {
     headRef: string;
@@ -19,8 +19,8 @@ interface CreateNewPrArgs {
   }
 }
 
-const createNewPullRequestByParent = async ({parentPullRequest, title}: CreateNewPrArgs) => {
-  const octokit = getOctokit();
+const createNewPullRequestByParent = async ({githubToken, parentPullRequest, title}: CreateNewPrArgs) => {
+  const octokit = github.getOctokit(githubToken);
 
   try {
     const {data: createdPullRequest} = await octokit.rest.pulls.create({
@@ -52,8 +52,9 @@ const createNewPullRequestByParent = async ({parentPullRequest, title}: CreateNe
 }
 
 
-export const getIfExistOrCreateNewPR = async ({title, parentPullRequest}: CreateNewPrArgs) => {
-  const octokit = getOctokit();
+
+export const getIfExistOrCreateNewPR = async ({githubToken, title, parentPullRequest}: CreateNewPrArgs) => {
+  const octokit = github.getOctokit(githubToken);
 
   const {data: pullRequests} = await octokit.rest.pulls.list({
     ...REQUEST_DATA,
@@ -69,7 +70,7 @@ export const getIfExistOrCreateNewPR = async ({title, parentPullRequest}: Create
 
   if (!alreadyExistPr) {
     core.info(`Pull request for ${parentPullRequest.headRef} to ${parentPullRequest.baseRef} does not exist. Creating new pull request`);
-    return createNewPullRequestByParent({parentPullRequest, title});
+    return createNewPullRequestByParent({githubToken, parentPullRequest, title});
   }
 
   core.warning(`Pull request already exists for ${parentPullRequest.headRef} to ${parentPullRequest.baseRef}`);
