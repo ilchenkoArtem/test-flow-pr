@@ -1,10 +1,9 @@
-import {getEnv, getOctokit} from './utils';
+import { getOctokit, exitWithError, getEnvJson} from './utils/helpers';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import {exitWithError} from './utils';
 import {PullRequest} from './types';
 
-const prWhichTriggeredAction = getEnv<PullRequest>("PR_WHICH_TRIGGERED_ACTION");
+const prWhichTriggeredAction = getEnvJson<PullRequest>("PR_WHICH_TRIGGERED_ACTION");
 
 const octokit = getOctokit();
 

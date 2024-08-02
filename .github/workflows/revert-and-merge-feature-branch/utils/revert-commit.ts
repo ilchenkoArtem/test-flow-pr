@@ -1,7 +1,7 @@
 import {$} from 'bun';
 import * as core from '@actions/core';
 import {addGitConfig} from './add-git-config';
-import {exitWithError} from './utils';
+import {exitWithError} from './helpers';
 
 interface RevertCommitArgs {
   commitToRevert: string;
