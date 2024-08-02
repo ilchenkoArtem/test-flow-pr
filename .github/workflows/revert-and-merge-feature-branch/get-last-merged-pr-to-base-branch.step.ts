@@ -4,10 +4,16 @@ import * as github from '@actions/github';
 import {PullRequest} from './types';
 
 const prWhichTriggeredAction = getEnvJson<PullRequest>("PR_WHICH_TRIGGERED_ACTION");
+const toBranch = "develop"
 
 const octokit = getOctokit();
 
 const baseBranch = prWhichTriggeredAction.base.ref;
+
+if (baseBranch === toBranch) {
+  core.notice(`Base branch and target branch are the same and equal ${baseBranch}. Skipping...`);
+  process.exit();
+}
 
 core.info(`Getting...`);
 
@@ -16,14 +22,14 @@ const {data: closedPullRequests} = await octokit.rest.pulls.list({
   repo: github.context.repo.repo,
   state: 'closed',
   head: `${github.context.repo.owner}:${baseBranch}`,
-  base: "develop",
+  base: toBranch,
   sort: "created",
   direction: "desc",
   per_page: 10,
 });
 
 if (closedPullRequests.length === 0) {
-  core.notice(`No pull requests found to ${baseBranch} . Skipping...`);
+  core.notice(`No pull requests found from ${baseBranch} to ${toBranch}  . Skipping...`);
   process.exit()
 }
 
@@ -34,7 +40,7 @@ const mergedPullRequests = closedPullRequests.filter(
 const lastMergedPrToDevelop = mergedPullRequests[0];
 
 if (!lastMergedPrToDevelop) {
-  core.notice(`No merged pull requests found for ${baseBranch}. Skipping...`);
+  core.notice(`No merged pull requests found from ${baseBranch}} to ${toBranch}. Skipping...`);
   process.exit()
 }
 

@@ -16,7 +16,7 @@ env:
   PR_NUMBER: ${{ github.event.pull_request.number }}
 
 jobs:
-  revert-and-merge-feature:
+  revert-and-merge-feature-branch-to-develop:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -31,7 +31,7 @@ jobs:
         id: pr-info
         run: bun ./get-event-pull-request-info.step.ts
 
-      - name: Find the last merged PR to the base branch
+      - name: Get the last merged PR to the base branch
         if: ${{ !!steps.pr-info.outputs.result }}
         id: last-merged-info
         run: bun ./get-last-merged-pr-to-base-branch.step.ts
