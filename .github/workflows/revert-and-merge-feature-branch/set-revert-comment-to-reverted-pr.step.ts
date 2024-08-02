@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import { getEnvJson, getOctokit} from './utils/helpers';
+import { getEnvJson, getOctokit} from '../utils/helpers';
 import {PullRequest} from './types';
 
 const revertedPullRequest = getEnvJson<PullRequest>("REVERTED_PR");

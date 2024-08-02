@@ -1,6 +1,6 @@
 import * as github from '@actions/github';
 import * as core from '@actions/core';
-import {getOctokit} from './helpers';
+import {getOctokit} from '../utils/helpers';
 
 const REQUEST_DATA = {
   owner: github.context.repo.owner,

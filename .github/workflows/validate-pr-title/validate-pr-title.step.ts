@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
-import {exitWithError, getEnv} from './utils';
-import {createPrTitle, isValidPullRequestTitle} from './pull-request-title-utils';
+import {exitWithError, getEnv} from '../utils/helpers';
+import {createPrTitle, isValidPullRequestTitle} from '../utils/pull-request-title-utils';
 
 const PR_TITLE = getEnv("PR_TITLE");
 const isValid = isValidPullRequestTitle(PR_TITLE);

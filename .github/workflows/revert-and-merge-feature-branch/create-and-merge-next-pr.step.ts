@@ -1,9 +1,9 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import {getIfExistOrCreateNewPR} from './utils/create-new-pr';
-import {isMergeable} from './utils/is-mergeable-pr';
-import {mergeTitle} from './utils/pull-request-title-utils';
-import {exitWithError, getOctokit, getEnvJson} from './utils/helpers';
+import {getIfExistOrCreateNewPR} from "./create-new-pr"
+import {isMergeable} from '../utils/is-mergeable-pr';
+import {mergeTitle} from '../utils/pull-request-title-utils';
+import {exitWithError, getOctokit, getEnvJson} from '../utils/helpers';
 import {PullRequest} from './types';
 
 const revertedPr = getEnvJson<PullRequest>("REVERTED_PR");

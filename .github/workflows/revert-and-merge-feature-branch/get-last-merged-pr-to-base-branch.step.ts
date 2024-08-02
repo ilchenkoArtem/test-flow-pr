@@ -1,4 +1,4 @@
-import { getOctokit, exitWithError, getEnvJson} from './utils/helpers';
+import { getOctokit, exitWithError, getEnvJson} from '../utils/helpers';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import {PullRequest} from './types';

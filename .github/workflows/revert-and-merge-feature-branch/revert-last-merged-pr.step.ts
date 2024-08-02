@@ -1,5 +1,5 @@
-import {revertCommit} from './utils/revert-commit';
-import {getEnv, getEnvJson} from './utils/helpers';
+import {revertCommit} from '../utils/revert-commit';
+import {getEnv, getEnvJson} from '../utils/helpers';
 import {PullRequest} from './types';
 import * as core from '@actions/core';
 
