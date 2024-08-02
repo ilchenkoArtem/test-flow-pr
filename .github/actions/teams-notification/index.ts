@@ -29,7 +29,9 @@ const message = createMessage({
   body,
 })
 
-console.log('message', message);
+core.startGroup("Message")
+core.debug(JSON.stringify(message, null, 2))
+core.endGroup()
 
 await sendNotification({
   webhook: webhook,
