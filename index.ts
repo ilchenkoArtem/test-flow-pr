@@ -15,3 +15,4 @@ const test12 = 20;
 const test13 = 22;
 const test22 = 22;
 const test23 = 23;
+const test24 = 24;
