@@ -1,21 +1,28 @@
 import {getEnv, getEnvJson, isValidJson} from '../../workflows/utils/helpers';
-
-
-const WEBHOOK_URL = getEnv('WEBHOOK_URL');
-const BODY = isValidJson(process.env.BODY) ? getEnvJson<Record<string, unknown>[]>("BODY") : getEnv('BODY')
-const TYPE = getEnv('TYPE', false)
-const ACTIONS = getEnvJson<Record<string, unknown>[]>('ACTIONS', false)
-const MENTION_LIST = getEnv('MENTION_LIST', false)?.split('|').map((mention) => mention.trim())
+import {createMessage} from '.github/teams-notification/Message';
+import {getTeamsMentionByGitUser, sendNotification} from '.github/teams-notification/utils';
 
 
 
+const webhook = getEnv('WEBHOOK_URL');
+const title = getEnv('TITLE')
+const body = isValidJson(process.env.BODY) ? getEnvJson<Record<string, unknown>[]>("BODY") : getEnv('BODY')
+const type = getEnv('TYPE', false)
+const actions = getEnvJson<Record<string, unknown>[]>('ACTIONS', false)
+const mentionList = getEnv('MENTION_LIST', false)?.split('|').map((mention) => mention.trim())
 
+const message = createMessage({
+  mentionList: getTeamsMentionByGitUser(mentionList || []),
+  actions: actions || [],
+  title,
+  type: type || "INFO",
+  body,
+})
 
-console.log('WEBHOOK_URL', WEBHOOK_URL);
-console.log('BODY', BODY);
-console.log('TYPE', TYPE);
-console.log('ACTIONS', ACTIONS);
-console.log('MENTION_LIST', MENTION_LIST);
+await sendNotification({
+  webhook: webhook,
+  message,
+})
 
 
 

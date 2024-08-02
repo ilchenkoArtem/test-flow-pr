@@ -1,5 +1,5 @@
 class MessageFactory {
-  getCardRoot = ({actions, assignedTo, body}: CreateRootModel) => {
+  getCardRoot = ({actions, mentionList, body}: CreateRootModel) => {
     return {
       type: "AdaptiveCard",
       $schema: "http://adaptivecards.io/schemas/adaptive-card.json",
@@ -13,7 +13,7 @@ class MessageFactory {
           spacing: "medium",
         }
       ],
-      msteams: this.getCardMsteams(assignedTo),
+      msteams: this.getCardMsteams(mentionList),
     }
   }
 
@@ -101,10 +101,10 @@ class MessageFactory {
     }
   }
 
-  public create = ({title, type, body, actions, assignedTo}: CreateModel) => {
+  public create = ({title, type, body, actions, mentionList}: CreateModel) => {
     const cardHeader = this.getCardHeader(title, type);
     const cardBody = this.getCardBody(body);
-    const cardAssignedTo = this.getAssignedTo(assignedTo);
+    const cardAssignedTo = this.getAssignedTo(mentionList);
 
     return this.getCardRoot({
       body: [
@@ -112,7 +112,7 @@ class MessageFactory {
         ...cardAssignedTo,
         ...cardBody,
       ],
-      assignedTo,
+      mentionList,
       actions
     });
   }
@@ -137,15 +137,15 @@ interface CreateModel {
   /**
    * Set GitHub user logins to mention them in the message
    */
-  assignedTo?: AdaptiveCardTeamMention[];
+  mentionList?: AdaptiveCardTeamMention[];
   body: string | AdaptiveCardBodyItem[];
   actions?: AdaptiveCardAction[];
 }
 
 interface CreateRootModel {
   body: AdaptiveCardBodyItem[];
-  actions: AdaptiveCardAction[];
-  assignedTo?: AdaptiveCardTeamMention[];
+  actions?: AdaptiveCardAction[];
+  mentionList?: AdaptiveCardTeamMention[];
 }
 
 export const createMessage = new MessageFactory().create;

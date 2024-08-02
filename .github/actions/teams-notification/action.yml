@@ -5,6 +5,9 @@ inputs:
   webhook-url:
     description: 'Teams webhook URL'
     required: true
+  title:
+    description: 'Message title'
+    required: true
   body:
     description: 'Message body. Can be a string or AdaptiveCard.body(https://adaptivecards.io/explorer/AdaptiveCard.html) object ]'
     required: true
@@ -33,6 +36,7 @@ runs:
         TYPE: ${{ inputs.type }}
         ACTIONS: ${{ inputs.actions }}
         MENTION_LIST: ${{ inputs.mentionList }}
+        TITLE: ${{ inputs.title }}
 
 
       shell: bash

@@ -15,7 +15,7 @@ jobs:
       - name: Send notification
         uses: ./.github/actions/teams-notification
         with:
-          webhook-url: https://prod2-30.germanywestcentral.logic.azure.com:443/workflows/6e6371735cb449ca98deae3df1730ee7/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=o_bUsM_SQyVRaSp1Ddr3HmQzI1uH4AkvhdeCiixL_uo
+          webhook-url: https://711mediade.webhook.office.com/webhookb2/b3ff7385-d875-466c-979d-c964b95740f3@040fc3ef-6a69-42af-86d9-98f35eaede44/IncomingWebhook/dc0777bb33dc48039ddfb38edf5016ec/54b9ed1d-26b3-4848-935c-368e666000a9"
           body: Hello from GitHub Actions
           type: info
           mentionList: ${{github.actor}}
