@@ -1,6 +1,6 @@
 import * as github from '@actions/github';
 import * as core from '@actions/core';
-import {exitWithError, getEnv, getOctokit} from "./utils/helpers";
+import {exitWithError, getEnv, getOctokit} from "../utils/helpers";
 
 const PR_NUMBER_WHICH_TRIGGERED_ACTION = getEnv("PR_NUMBER");
 
