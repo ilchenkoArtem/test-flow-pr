@@ -35,7 +35,7 @@ const mergedPullRequests = closedPullRequests.filter(
 const lastMergedPrToDevelop = mergedPullRequests[0];
 
 if (!lastMergedPrToDevelop) {
-  core.notice(`No merged pull requests found for ${baseBranch}. Skipping...`);
+  core.notice(`No merged pull requests found from ${baseBranch}} to ${toBranch}. Skipping...`);
   process.exit()
 }
 
