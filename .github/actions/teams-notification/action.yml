@@ -36,9 +36,9 @@ runs:
             WEBHOOK_URL: ${{inputs.webhook-url}},
             Title: ${{inputs.title}},
             Body: ${{inputs.body}},
-            Type: ${{inputs.type}},
-            MENTION_LIST: ${{inputs.mentionList}},
-            Actions: ${{inputs.actions}}
+            Type: ${{inputs.type || null}},
+            MENTION_LIST: ${{inputs.mentionList || null}},
+            Actions: ${{inputs.actions || null}}
           };
           
           core.info(`Inputs:  ${JSON.stringify(inputs)}`);
