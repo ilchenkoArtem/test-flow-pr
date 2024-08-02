@@ -1,7 +1,5 @@
-
 import * as github from '@actions/github';
-import {getEnv} from '../../feature-auto-merge-to-develop/utils';
-
+import {getEnv} from '../../workflows/utils/helpers';
 const WEBHOOK_URL = getEnv('WEBHOOK_URL');
 console.log('WEBHOOK_URL', WEBHOOK_URL);
 
