@@ -54,7 +54,7 @@ jobs:
           REVERTED_PR: ${{ steps.last-merged-info.outputs.result }}
 
       - name: Create and Merge Sync PR
-        if: ${{ !!steps.last-merged-info.outputs.result }}
+        if: ${{ !!steps.last-merged-info.outputs.result && !!steps.revert-last-merged-pr.outputs.result }}
         run: bun ./create-and-merge-sync-pr.step.ts
         env:
           PR_WHICH_TRIGGERED_ACTION: ${{ steps.pr-info.outputs.result }}
