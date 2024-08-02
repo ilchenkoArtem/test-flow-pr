@@ -15,3 +15,4 @@ await octokit.rest.issues.createComment({
   owner: github.context.repo.owner,
   repo: github.context.repo.repo,
 });
+core.notice(`Revert comment has been added`);
