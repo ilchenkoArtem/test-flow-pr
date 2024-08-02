@@ -1,7 +1,9 @@
 import {$} from 'bun';
 import * as core from '@actions/core';
 import {addGitConfig} from './add-git-config';
-import {exitWithError} from './utils';
+import {exitWithError} from './helpers';
+
+$.throws(true)
 
 interface RevertCommitArgs {
   commitToRevert: string;
@@ -11,11 +13,16 @@ interface RevertCommitArgs {
 
 export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken}: RevertCommitArgs):Promise<boolean> => {
   await addGitConfig({gitHubToken});
-  await $`git checkout ${branchForRevert}`
 
-  const {stderr, stdout} = await $`git revert ${commitToRevert} --no-edit`.quiet().nothrow();
+  const currentBranch = (await $`git branch --show-current`).text();
+  core.info(`Current branch: ${currentBranch}`)
+
+  const {stderr, stdout} = await $`git revert ${commitToRevert} --no-edit`.quiet().throws(false);
   const revertErrorMessage = stderr.toString();
   const revertResultMessage = stdout.toString();
+
+  console.log('revertErrorMessage', revertErrorMessage);
+  console.log('revertResultMessage', revertResultMessage);
 
   if (revertResultMessage.includes("Your branch is up to date")) {
     core.notice(`Commit "${commitToRevert}" has already been reverted`)
@@ -36,7 +43,11 @@ export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken
 
   await $`git push origin ${branchForRevert}`
 
+
   core.notice(`Commit "${commitToRevert}" has been reverted on branch "${branchForRevert}"`)
+  core.info(`Back to the branch "${currentBranch}"`)
+  //we need to return to the branch from which the action was triggered to prevent error in next steps
+  await $`git checkout ${currentBranch}`
   return true;
 }
 

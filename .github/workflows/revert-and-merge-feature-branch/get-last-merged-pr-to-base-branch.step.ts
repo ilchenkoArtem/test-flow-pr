@@ -1,10 +1,9 @@
-import {getEnv, getOctokit} from './utils';
+import { getOctokit, exitWithError, getEnvJson} from './utils/helpers';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import {exitWithError} from './utils';
 import {PullRequest} from './types';
 
-const prWhichTriggeredAction = getEnv<PullRequest>("PR_WHICH_TRIGGERED_ACTION");
+const prWhichTriggeredAction = getEnvJson<PullRequest>("PR_WHICH_TRIGGERED_ACTION");
 
 const octokit = getOctokit();
 
@@ -50,4 +49,4 @@ if (!lastMergedPrToDevelop.merge_commit_sha) {
 
 const output = JSON.stringify(lastMergedPrToDevelop);
 core.debug(`Output: ${output}`);
-core.setOutput("result", JSON.stringify(output));
+core.setOutput("result", output);

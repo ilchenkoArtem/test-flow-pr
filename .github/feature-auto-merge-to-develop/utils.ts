@@ -18,8 +18,3 @@ export const exitWithError = (message: string): void => {
 export const getOctokit = () => {
   return github.getOctokit(getEnv("GITHUB_TOKEN"));
 }
-
-export const BASE_REQUEST_DATA = {
-  owner: github.context.repo.owner,
-  repo: github.context.repo.repo,
-}

@@ -1,10 +1,10 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import {getEnv, getOctokit} from './utils';
+import { getEnvJson, getOctokit} from './utils/helpers';
 import {PullRequest} from './types';
 
-const revertedPullRequest = getEnv<PullRequest>("REVERTED_PR");
-const actionTriggeredPullRequest = getEnv<PullRequest>("PR_WHICH_TRIGGERED_ACTION");
+const revertedPullRequest = getEnvJson<PullRequest>("REVERTED_PR");
+const actionTriggeredPullRequest = getEnvJson<PullRequest>("PR_WHICH_TRIGGERED_ACTION");
 
 const octokit = getOctokit();
 
@@ -15,3 +15,4 @@ await octokit.rest.issues.createComment({
   owner: github.context.repo.owner,
   repo: github.context.repo.repo,
 });
+core.notice(`Revert comment has been added`);
