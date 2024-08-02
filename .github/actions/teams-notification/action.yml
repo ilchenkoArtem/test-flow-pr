@@ -28,15 +28,24 @@ runs:
     - name: Install Bun
       uses: oven-sh/setup-bun@v2
 
+    - name: Set environment variables
+      shell: bash
+      run: |
+        set_env_var() {
+          local var_name=$1
+          local var_value=$2
+          if [ -n "$var_value" ]; then
+            echo "$var_name=$var_value" >> $GITHUB_ENV
+          fi
+        }
+          
+        set_env_var "WEBHOOK_URL" "${{ inputs.webhook-url }}"
+        set_env_var "BODY" "${{ inputs.body }}"
+        set_env_var "TYPE" "${{ inputs.type }}"
+        set_env_var "ACTIONS" "${{ inputs.actions }}"
+        set_env_var "MENTION_LIST" "${{ inputs.mentionList }}"
+        set_env_var "TITLE" "${{ inputs.title }}"
+
     - name: Notify teams channel
       run: bun ./.github/actions/teams-notification/index.ts
-      env:
-        WEBHOOK_URL: ${{ inputs.webhook-url }}
-        BODY: ${{ inputs.body }}
-        TYPE: ${{ inputs.type }}
-        ACTIONS: ${{ inputs.actions }}
-        MENTION_LIST: ${{ inputs.mentionList }}
-        TITLE: ${{ inputs.title }}
-
-
       shell: bash
