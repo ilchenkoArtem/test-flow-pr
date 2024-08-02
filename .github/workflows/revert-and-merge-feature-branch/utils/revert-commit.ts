@@ -14,7 +14,7 @@ interface RevertCommitArgs {
 export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken}: RevertCommitArgs):Promise<boolean> => {
   await addGitConfig({gitHubToken});
 
-  const tempBranchName = `temp-branch-${new Date().toTimeString()}`;
+  const tempBranchName = `temp-branch-${new Date().getTime()}`;
   await $`git checkout -b ${tempBranchName}`;
   core.notice(`Created a temporary branch "${tempBranchName}"`)
 
