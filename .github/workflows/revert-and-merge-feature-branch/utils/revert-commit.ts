@@ -17,6 +17,8 @@ export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken
   const currentBranch = (await $`git branch --show-current`).text();
   core.info(`Current branch: ${currentBranch}`)
 
+  await $`git checkout ${branchForRevert}`;
+
   const {stderr, stdout} = await $`git revert ${commitToRevert} --no-edit`.quiet().throws(false);
   const revertErrorMessage = stderr.toString();
   const revertResultMessage = stdout.toString();
