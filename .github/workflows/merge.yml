@@ -16,7 +16,7 @@ env:
   PR_NUMBER: ${{ github.event.pull_request.number }}
 
 jobs:
-  revert-and-merge-feature:
+  revert-and-merge-feature-branch-to-develop:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
