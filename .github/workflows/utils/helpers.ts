@@ -18,7 +18,7 @@ export function getEnv(key: string, required: true): string;
 export function getEnv(key: string): string;
 export function getEnv(key: string, required = true): string | null {
   const value = process.env[key];
-  if (value === undefined && required) {
+  if (!value && required) {
     exitWithError(`Environment variable "${key}" is not set`);
   }
   if (value === undefined) return null;
