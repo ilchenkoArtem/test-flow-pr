@@ -40,8 +40,6 @@ runs:
             MENTION_LIST: ${{inputs.mentionList || null}},
             Actions: core.getInput('actions') || null
           };
-          
-          core.info(`Inputs:  ${JSON.stringify(inputs)}`);
 
     - name: Notify teams channel
       run: bun ./.github/actions/teams-notification/index.ts
