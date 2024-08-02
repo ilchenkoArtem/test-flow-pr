@@ -17,9 +17,12 @@ export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken
   const currentBranch = (await $`git rev-parse --abbrev-ref HEAD`).text();
   core.info(`Current branch: ${currentBranch}`)
 
-  const {stderr, stdout} = await $`git revert ${commitToRevert} --no-edit`.quiet().nothrow();
+  const {stderr, stdout} = await $`git revert ${commitToRevert} --no-edit`.quiet().throws(false);
   const revertErrorMessage = stderr.toString();
   const revertResultMessage = stdout.toString();
+
+  console.log('revertErrorMessage', revertErrorMessage);
+  console.log('revertResultMessage', revertResultMessage);
 
   if (revertResultMessage.includes("Your branch is up to date")) {
     core.notice(`Commit "${commitToRevert}" has already been reverted`)
