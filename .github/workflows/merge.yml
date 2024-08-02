@@ -53,7 +53,6 @@ jobs:
           REVERTED_PR: ${{ steps.last-merged-info.outputs.result }}
 
       - name: Create and Merge Sync PR
-        working-directory: ./.github/workflows/revert-and-merge-feature-branch
         if: ${{ !!steps.last-merged-info.outputs.result && !!steps.revert-last-merged-pr.outputs.result }}
         run: bun ./create-and-merge-next-pr.step.ts
         env:
