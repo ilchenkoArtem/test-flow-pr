@@ -3,7 +3,7 @@ name: Test notification
 on:
   workflow_dispatch:
   pull_request:
-    types: [ opened, synchronize, edited ]
+    types: [opened, synchronize, edited]
 
 jobs:
   test-notification:
