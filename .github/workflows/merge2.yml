@@ -46,7 +46,6 @@ jobs:
           LAST_MERGED_PR: ${{ steps.last-merged-info.outputs.result }}
 
       - name: Set revert comment to reverted PR
-        working-directory: ./.github/workflows/revert-and-merge-feature-branch
         continue-on-error: true
         run: bun ./.github/workflows/revert-and-merge-feature-branch/set-revert-comment-to-reverted-pr.step.ts
         env:
