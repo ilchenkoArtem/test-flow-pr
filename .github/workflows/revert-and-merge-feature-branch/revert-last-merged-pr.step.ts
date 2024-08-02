@@ -5,7 +5,7 @@ import * as core from '@actions/core';
 
 const lastMergedPr = getEnvJson<PullRequest>("LAST_MERGED_PR");
 
-console.log('lastMergedPr', lastMergedPr);
+core.debug(`Input Last Merged PR: ${JSON.stringify(lastMergedPr)}`);
 
 core.info(`Revert commit "${lastMergedPr.merge_commit_sha}" from "${lastMergedPr.base.ref}"`);
 const reverted = await revertCommit({
