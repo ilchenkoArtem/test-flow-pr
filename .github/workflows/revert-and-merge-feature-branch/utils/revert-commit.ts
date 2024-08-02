@@ -40,11 +40,11 @@ export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken
   }
 
   await $`git push origin ${branchForRevert}`*/
-  await $`git fetch`.throws(true);
+  await $`git fetch --all`.throws(true);
   core.notice(`Commit "${commitToRevert}" has been reverted on branch "${branchForRevert}"`)
   core.info(`Back to the branch "${currentBranch}"`)
   //we need to return to the branch from which the action was triggered to prevent error in next steps
-  await $`git checkout --track origin/${currentBranch}`.throws(true);
+  await $`git checkout ${currentBranch}`.throws(true);
   return true;
 }
 
