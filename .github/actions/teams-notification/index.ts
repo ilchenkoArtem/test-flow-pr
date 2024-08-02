@@ -30,7 +30,7 @@ const message = createMessage({
 })
 
 core.startGroup("Message")
-core.debug(JSON.stringify(message, null, 2))
+core.info(JSON.stringify(message, null, 2))
 core.endGroup()
 
 await sendNotification({
