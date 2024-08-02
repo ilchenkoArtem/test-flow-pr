@@ -1,9 +1,21 @@
-import * as github from '@actions/github';
-import {getEnv} from '../../workflows/utils/helpers';
-const WEBHOOK_URL = getEnv('WEBHOOK_URL');
-const TYPE = getEnv('TYPE');
+import {getEnv, getEnvJson, isValidJson} from '../../workflows/utils/helpers';
 
-console.log('context', github.context);
-console.log('context.actor', github.context.actor);
-console.log('context.actor', github.context.actor);
+
+const WEBHOOK_URL = getEnv('WEBHOOK_URL');
+const BODY = isValidJson(process.env.BODY) ? getEnvJson<Record<string, unknown>[]>("BODY") : getEnv('BODY')
+const TYPE = getEnv('TYPE', false)
+const ACTIONS = getEnvJson<Record<string, unknown>[]>('ACTIONS', false)
+const NOTIFY = getEnvJson<string[]>('NOTIFY', false)
+
+
+
+
+
+console.log('WEBHOOK_URL', WEBHOOK_URL);
+console.log('BODY', BODY);
+console.log('TYPE', TYPE);
+console.log('ACTIONS', ACTIONS);
+console.log('NOTIFY', NOTIFY);
+
+
 
