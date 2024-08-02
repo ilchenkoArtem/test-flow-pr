@@ -2,6 +2,7 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 
 export const getEnv = (key: string) => {
+  console.trace(`Getting env variable ${key}`);
   const value = process.env[key];
   if (value === undefined) {
     exitWithError(`Environment variable "${key}" is not set`);
