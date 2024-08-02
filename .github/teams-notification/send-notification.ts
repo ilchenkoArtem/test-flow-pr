@@ -1,43 +1,40 @@
 import {createMessage} from './Message';
 
-export class TeamsNotification {
-  private readonly webhookUrl: string;
+interface SendNotificationArgs {
+  webhook: string;
+  message: unknown;
+}
 
-  constructor(webhookUrl: string) {
-    this.webhookUrl = webhookUrl;
-  }
-
-  private errorHandling(error: unknown) {
-    console.error("Error sending notification to Teams:", error);
-    throw error;
-  }
-
-  async send(body: unknown) {
-    const options = {
+export const sendNotification = async ({message, webhook}: SendNotificationArgs) => {
+  try {
+    const response = await fetch(webhook, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(body),
-    };
+      body: JSON.stringify({
+        "type": "message",
+        "attachments": [
+          {
+            "contentType": "application/vnd.microsoft.card.adaptive",
+            "content": message
+          }
+        ]
+      })
+    });
 
-    try {
-      const response = await fetch(this.webhookUrl, options)
-      const responseData = await response.json();
-
-      if (!response.ok) {
-        throw responseData;
-      }
-      console.info('Notification sent to Teams');
-    } catch (e) {
-      this.errorHandling(e);
+    if (!response.ok) {
+      throw new Error('Failed to send notification');
     }
+
+    console.log("Notification sent to Teams");
+  } catch
+    (error) {
+    console.error("Error sending notification to Teams:", error);
+    throw error;
   }
 }
 
-const teamsNotification = new TeamsNotification(
-  "https://prod2-05.germanywestcentral.logic.azure.com:443/workflows/0d96055dde764b19af0e7368a6d756f7/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=qZklgLiaC5XbFgHsT7ZqC-bsydY-4MPM7BxN9bBdqdY"
-)
 
 import {AdaptiveCard, TextBlock, ColumnSet, Column, Image, Version} from 'adaptivecards';
 import {getTeamsMentionByGitUser} from './utils';
@@ -104,24 +101,9 @@ const message = createMessage({
 
 console.log('message', JSON.stringify(message, null, 2));
 
-/*teamsNotification.send({
-  "type": "message",
-  "attachments": [
-    {
-      "contentType": "application/vnd.microsoft.card.adaptive",
-      "content": test,
-    }
-  ]
-})*/
-
-teamsNotification.send({
-  "type": "message",
-  "attachments": [
-    {
-      "contentType": "application/vnd.microsoft.card.adaptive",
-      "content": message
-    }
-  ]
-})
+sendNotification({
+  webhook: "https://711mediade.webhook.office.com/webhookb2/b3ff7385-d875-466c-979d-c964b95740f3@040fc3ef-6a69-42af-86d9-98f35eaede44/IncomingWebhook/dc0777bb33dc48039ddfb38edf5016ec/54b9ed1d-26b3-4848-935c-368e666000a9",
+  message: message
+});
 
 
