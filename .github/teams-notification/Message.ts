@@ -20,8 +20,8 @@ class MessageFactory {
             type: "mention",
             text: `<at>Artem</at>`,
             mentioned: {
-              id: "Artem Ilchenko",
-              name: "artem.ilchenko@711media.de",
+              id: "artem.ilchenko@711media.de",
+              name: "Artem Ilchenko",
             }
           }
         ]
@@ -85,7 +85,6 @@ class MessageFactory {
       type: "TextBlock",
       text: `<at>Artem</at>`,
       wrap: true,
-      separator: true,
     }
   }
 
