@@ -25,7 +25,7 @@ const message = createMessage({
   mentionList: getTeamsMentionByGitUser(mentionList || []),
   actions: actions || [],
   title,
-  type: type || "INFO",
+  type: type?.toUpperCase() || "INFO",
   body,
 })
 
