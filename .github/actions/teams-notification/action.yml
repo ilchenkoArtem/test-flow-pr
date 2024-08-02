@@ -33,12 +33,12 @@ runs:
       with:
         script: |
           const inputs = {
-            webhookUrl: process.env.WEBHOOK_URL,
-            title: process.env.TITLE,
-            body: process.env.BODY,
-            type: process.env.TYPE,
-            mentionList: process.env.MENTION_LIST,
-            actions: process.env.ACTIONS
+            webhookUrl: ${{inputs.webhook-url}},
+            title: ${{inputs.title}},
+            body: ${{inputs.body}},
+            type: ${{inputs.type}},
+            mentionList: ${{inputs.mentionList}},
+            actions: ${{inputs.actions}}
           };
           
           core.info(`Inputs:  ${JSON.stringify(inputs)}`);
