@@ -20,4 +20,5 @@ jobs:
           type: info
           mentionList: ${{github.actor}}
           actions: '[{"type": "Action.OpenUrl", "title": "Open in GitHub", "url": "${{github.event.pull_request.html_url}}"}]'
+          title: Test notification
 
