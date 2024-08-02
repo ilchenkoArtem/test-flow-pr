@@ -1,3 +1,5 @@
+import {createMessage} from './Message';
+
 export class TeamsNotification {
   private readonly webhookUrl: string;
 
@@ -37,16 +39,19 @@ const teamsNotification = new TeamsNotification(
   "https://prod2-05.germanywestcentral.logic.azure.com:443/workflows/0d96055dde764b19af0e7368a6d756f7/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=qZklgLiaC5XbFgHsT7ZqC-bsydY-4MPM7BxN9bBdqdY"
 )
 
-import { AdaptiveCard, TextBlock, ColumnSet, Column, Image, Version } from 'adaptivecards';
+import {AdaptiveCard, TextBlock, ColumnSet, Column, Image, Version} from 'adaptivecards';
 
 const adaptiveCard = new AdaptiveCard();
 adaptiveCard.version = new Version(1, 4);
 const title = new TextBlock();
 title.text = "[ERROR] in the workflow";
 title.style = "default";
+title.color = 2;
 title.weight = 2;
-title.size = 2;
 title.wrap = true;
+title.size = 2;
+title.spacing = 0;
+title.separator = true;
 
 // Author section
 const authorSection = new ColumnSet();
@@ -80,7 +85,24 @@ adaptiveCard.addItem(authorSection);
 
 const test = adaptiveCard.toJSON();
 
-teamsNotification.send({
+console.log('test', test);
+
+const message = createMessage({
+  type: "ERROR",
+  title: "!!Error in the workflow",
+  body: "This **is** a test message [test](https://www.google.com)",
+  actions: [
+    {
+      type: "Action.OpenUrl",
+      title: "Action.OpenUrl",
+      url: "https://adaptivecards.io"
+    }
+  ],
+});
+
+console.log('message', JSON.stringify(message, null, 2));
+
+/*teamsNotification.send({
   "type": "message",
   "attachments": [
     {
@@ -88,5 +110,16 @@ teamsNotification.send({
       "content": test,
     }
   ]
+})*/
+
+teamsNotification.send({
+  "type": "message",
+  "attachments": [
+    {
+      "contentType": "application/vnd.microsoft.card.adaptive",
+      "content": message
+    }
+  ]
 })
+
 
