@@ -26,6 +26,7 @@ export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken
 
   if (revertResultMessage.includes("Your branch is up to date")) {
     core.notice(`Commit "${commitToRevert}" has already been reverted`)
+    await $`git checkout ${tempBranchName}`
     return false;
   }
 
@@ -41,7 +42,7 @@ export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken
     exitWithError(`Failed to revert commit "${commitToRevert}". Error: ${revertErrorMessage}`);
   }
 
-  await $`git push origin ${branchForRevert}`
+  await $`git push origin ${branchForRevert}`.throws(true);
 
 
   core.notice(`Commit "${commitToRevert}" has been reverted on branch "${branchForRevert}"`)
