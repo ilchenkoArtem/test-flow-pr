@@ -72,7 +72,7 @@ export const getIfExistOrCreateNewPR = async ({title, parentPullRequest}: Create
     return createNewPullRequestByParent({parentPullRequest, title});
   }
 
-  core.warning(`Pull request already exists for ${parentPullRequest.headRef} to ${parentPullRequest.baseRef}`);
+  core.warning(`Pull request already exists from ${parentPullRequest.headRef} to ${parentPullRequest.baseRef} branches`);
 
   core.startGroup("Pull request already exists:");
   core.info(`Title: ${alreadyExistPr.title}`);

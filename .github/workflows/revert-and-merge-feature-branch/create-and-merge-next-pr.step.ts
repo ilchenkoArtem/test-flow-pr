@@ -10,13 +10,13 @@ const revertedPr = getEnvJson<PullRequest>("REVERTED_PR");
 const prWhichTriggeredAction = getEnvJson<PullRequest>("PR_WHICH_TRIGGERED_ACTION");
 const octokit = getOctokit()
 
-core.info('Merge title of the last merged PR and the PR which triggered the action...');
+core.info('Merge title of the reverted PR and the PR which triggered the action...');
 const mergeTitleInfo = mergeTitle(revertedPr.title, prWhichTriggeredAction.title);
 core.info(`Merge title info: ${JSON.stringify(mergeTitleInfo)}`);
 
 core.info(`Merge to ${revertedPr.base.ref}`);
 
-core.info(`Creating new pull request based on the parent pull request...`);
+core.info(`Creating new pull request based on reverted pull request...`);
 const createdPullRequest = await getIfExistOrCreateNewPR({
   parentPullRequest: {
     headRef: revertedPr.head.ref,
