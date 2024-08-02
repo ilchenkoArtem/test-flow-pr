@@ -10,7 +10,7 @@ interface RevertCommitArgs {
 }
 
 export const revertCommit = async ({branchForRevert, commitToRevert, gitHubToken}: RevertCommitArgs):Promise<boolean> => {
-  const currentBranch = (await $`git branch --show-current`);
+  const currentBranch = (await $`git branch --show-current`).stdout.toString().trim();
   core.info(`Current branch: ${currentBranch}`);
 
   await addGitConfig({gitHubToken});
