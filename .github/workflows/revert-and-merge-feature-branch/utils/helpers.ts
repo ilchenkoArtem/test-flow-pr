@@ -23,7 +23,7 @@ export const getEnvJson = <T = string>(key: string): T => {
 
 export const exitWithError = (message: string): void => {
   core.setFailed(message);
-  process.exit();
+  process.exit(1);
 }
 
 export const getOctokit = () => {
