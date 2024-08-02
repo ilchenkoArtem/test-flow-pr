@@ -15,7 +15,13 @@ export const getEnvJson = <T = string>(key: string): T => {
   const env = getEnv(key);
 
   try {
-    return JSON.parse(env);
+    const parsedValue = JSON.parse(env);
+
+    if (parsedValue === "string") {
+      exitWithError(`Failed to parse environment variable "${key}" as JSON. Error: Parsed value ${parsedValue} is a string`);
+    }
+
+    return parsedValue;
   } catch (error) {
     exitWithError(`Failed to parse environment variable "${key}" as JSON. Error: ${error}`);
   }
@@ -23,7 +29,7 @@ export const getEnvJson = <T = string>(key: string): T => {
 
 export const exitWithError = (message: string): void => {
   core.setFailed(message);
-  process.exit(1);
+  process.exit();
 }
 
 export const getOctokit = () => {

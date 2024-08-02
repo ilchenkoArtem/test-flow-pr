@@ -49,4 +49,4 @@ if (!lastMergedPrToDevelop.merge_commit_sha) {
 
 const output = JSON.stringify(lastMergedPrToDevelop);
 core.debug(`Output: ${output}`);
-core.setOutput("result", JSON.stringify(output));
+core.setOutput("result", output);
