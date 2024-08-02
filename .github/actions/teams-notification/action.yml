@@ -15,8 +15,8 @@ inputs:
   actions:
     description: 'Actions to be added to the message. AdaptiveCard.actions(https://adaptivecards.io/explorer/AdaptiveCard.html) object'
     required: false
-  notify:
-    description: 'List of users to notify. Use nickname of github user "["user1", "user2"]"'
+  mentionList:
+    description: 'List of users to notify. Use nickname of github user "userName1" | userName2"'
     required: false
 
 runs:
@@ -32,7 +32,7 @@ runs:
         BODY: ${{ inputs.body }}
         TYPE: ${{ inputs.type }}
         ACTIONS: ${{ inputs.actions }}
-        NOTIFY: ${{ inputs.notify }}
+        MENTION_LIST: ${{ inputs.mentionList }}
 
 
       shell: bash
