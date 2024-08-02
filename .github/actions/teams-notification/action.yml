@@ -29,6 +29,10 @@ runs:
       run: bun ./.github/actions/teams-notification/index.ts
       env:
         WEBHOOK_URL: ${{ inputs.webhook-url }}
+        BODY: ${{ inputs.body }}
+        TYPE: ${{ inputs.type }}
+        ACTIONS: ${{ inputs.actions }}
+        NOTIFY: ${{ inputs.notify }}
 
 
       shell: bash
