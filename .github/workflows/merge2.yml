@@ -1,0 +1,56 @@
+name: Revert and merge feature
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [closed, opened, synchronize, edited]
+
+defaults:
+  run:
+    working-directory: ./.github/workflows/revert-and-merge-feature-branch
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
+  HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
+  PR_NUMBER: ${{ github.event.pull_request.number }}
+
+jobs:
+  revert-and-merge-feature:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Get info about the PR
+        id: pr-info
+        run: bun ./get-event-pull-request-info.step.ts
+
+      - name: Find the last merged PR to the base branch
+        if: ${{ !!steps.pr-info.outputs.result }}
+        id: last-merged-info
+        run: bun ./get-last-merged-pr-to-base-branch.ts
+        env:
+          PR_WHICH_TRIGGERED_ACTION: ${{ steps.pr-info.outputs.result }}
+
+      - name: Revert the last merged PR from develop
+        id: revert-last-merged-pr
+        if: ${{ !!steps.last-merged-info.outputs.result }}
+        run: bun ./revert-last-merged-pr.step.ts
+        env:
+          LAST_MERGED_PR: ${{ steps.last-merged-info.outputs.result }}
+
+      - name: Set revert comment to reverted PR
+        if: ${{ steps.revert-last-merged-pr.outputs.result == 'true' }}
+        continue-on-error: true
+        run: bun ./set-revert-comment-to-reverted-pr.step.ts
+        env:
+          PR_WHICH_TRIGGERED_ACTION: ${{ steps.pr-info.outputs.result }}
+          REVERTED_PR: ${{ steps.last-merged-info.outputs.result }}
+
+

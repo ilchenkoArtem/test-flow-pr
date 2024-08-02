@@ -8,7 +8,6 @@ on:
 jobs:
   revert-and-merge-feature:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref != 'develop' && github.event.pull_request.base.ref != 'main'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -17,6 +16,7 @@ jobs:
 
       - name: Install Bun
         uses: oven-sh/setup-bun@v2
+
 
       - name: Auto merge
         run: bun ./.github/feature-auto-merge-to-develop/revert-and-merge-feature.workflow.ts
