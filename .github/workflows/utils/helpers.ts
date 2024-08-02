@@ -22,7 +22,7 @@ export function getEnv(key: string, required = true): string | null {
     exitWithError(`Environment variable "${key}" is not set`);
   }
 
-  if (value === undefined || (!required && value === "")) return null;
+  if (value === undefined) return null;
   return value.trim();
 }
 
@@ -30,8 +30,8 @@ export function getEnvJson<T = string>(key: string, required: false): T | null;
 export function getEnvJson<T = string>(key: string, required: true): T;
 export function getEnvJson<T = string>(key: string): T;
 export function getEnvJson<T = string>(key: string, required = true): T | null {
-  const env = getEnv(key,  required as true);
-  if (env === null) return null;
+  const env:string | null = getEnv(key,  required as true);
+  if (env === null || !required && env === "") return null;
 
   if (isValidJson(env)) {
     return JSON.parse(env) as T;
