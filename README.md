@@ -39,4 +39,10 @@ Then our test team will test the `develop` branch and if we have `bug`, do the n
 All next actions will be done automatically after merging the PR from `fix` to `feature` branch:
 - Revert the previous squashed commit in `develop` branch from `feature` branch
 - Create a PR from `feature` to `develop` branch with the title from the previous title and add the bug task to the title `feat(FL-1111, FL-1112): your feature`
-- Merge PR
+- Merge new PR to the `develop` branch
+
+### What do you need to do?
+Please test the new flow in this project. 
+You can create a new feature branch from develop, merge
+create fix branch and etc.
+
