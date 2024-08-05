@@ -1,0 +1,25 @@
+name: Validate PR Title
+
+defaults:
+  run:
+    working-directory: ./.github/workflows/validate-pr-title
+
+on:
+  pull_request:
+    types: [opened, edited, reopened]
+
+jobs:
+  validate-pr-title:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Validate PR title
+        run: bun ./validate-pr-title.step.ts
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
