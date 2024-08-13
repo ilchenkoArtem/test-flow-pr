@@ -1,3 +1,3 @@
-const test3 = 5;
-const test4 = 4;
-const test5 = 5;
+const test3 = 4;
+const test4 = 6;
+const test5 = 2;
