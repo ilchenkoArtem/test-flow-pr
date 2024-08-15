@@ -1,0 +1,9 @@
+name: Install Bun
+description: Install Bun
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Bun
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version-file: .bun-version
