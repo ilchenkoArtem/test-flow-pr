@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Bun
-        uses: ./github/actions/install-bun
+        uses: ../actions/install-bun
 
       - name: Validate PR title
         run: bun ./validate-pr-title.step.ts
