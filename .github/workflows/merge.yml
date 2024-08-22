@@ -10,7 +10,7 @@ defaults:
     working-directory: ./.github/workflows/revert-and-merge-feature-branch
 
 env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.AUTO_REVERT_AND_MERGE_FEATURE_VAT}}
   BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
   HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
   PR_NUMBER: ${{ github.event.pull_request.number }}
